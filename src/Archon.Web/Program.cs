@@ -204,8 +204,9 @@ var spaIndex = Path.Combine(
 IResult ServeApp() => File.Exists(spaIndex)
     ? Results.File(spaIndex, "text/html")
     : Results.Text("La surface React n'est pas encore construite (src/Archon.Surface : npm run build).", "text/plain");
+// Un seul endpoint : le template "/app" matche deja "/app" et "/app/" (enregistrer les deux
+// creerait une AmbiguousMatchException, le routing normalisant le slash final).
 app.MapGet("/app", ServeApp);
-app.MapGet("/app/", ServeApp);
 
 app.Run();
 

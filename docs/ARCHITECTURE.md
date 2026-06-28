@@ -17,14 +17,15 @@ connecteur, agent) choisit la meilleure stack pour son besoin, et communique via
 | Connecteurs / outils | **MCP** (Model Context Protocol) | n'importe laquelle |
 | Plugins (code non fiable) | **WASM/WASI Component Model (WIT)** ou **gRPC** | Rust, Go, TS, C, Python... |
 | Agents IA | **HTTP/JSON ou MCP** | souvent Python (ecosysteme mur), remplacable |
-| Frontend | composants + schemas UI | Blazor (shell), TS possible pour la surface generative |
+| Frontend | shell + surface generative (schema UI neutre) | Blazor (shell) ; TS/React (renderer de la surface generative) |
 
 Le **bac a sable des plugins** (WASM/WASI, executeur Rust via Wasmtime ou Extism) est la
 **frontiere de confiance** : c'est la que tourne le code non fiable, donc la que la
 securite se concentre. Le langage du coeur compte moins que l'etancheite de cette frontiere.
 
-Le **transport temps reel n'est pas fige** : WebSocket, SSE, SignalR ou autre, derriere
-une abstraction. On tranchera quand la premiere surface live le demandera.
+Le **transport temps reel** : **WebSocket par defaut** (standard, polyglotte), derriere
+une abstraction `IRealtimeTransport`. SignalR reste un adaptateur optionnel pour les
+deploiements .NET ; SSE pour les flux unidirectionnels simples.
 
 Principe directeur : **la securite se met la ou s'execute le code non fiable, pas dans le
 langage du coeur.**
@@ -44,9 +45,12 @@ langage du coeur.**
    capability gating ; execution du code auto-genere en conteneur ephemere ; journal
    d'audit immuable ; defense anti-injection (directe et indirecte, via les resultats
    d'outils et les flux camera) ; rate limits et kill-switch.
-5. **Surface UI generative.** L'IA n'emet pas de HTML brut (risque XSS) mais des **schemas
-   declaratifs streames** (standards emergents type A2UI / AG-UI), rendus en composants
-   surs et mis a jour en direct.
+5. **Surface UI generative.** L'orchestrateur et les agents ont une **capacite de premiere
+   classe : rendre une UI a l'utilisateur**. Ils emettent un **schema declaratif neutre**
+   (type A2UI / AG-UI), jamais du HTML brut dans le contexte de confiance. Un **renderer
+   TS/React** le transforme en composants surs, mis a jour en direct via le transport temps
+   reel. Pour les rendus vraiment originaux, un **mode libre** affiche du markup custom dans
+   un **iframe bac a sable** (CSP stricte, assaini, isole du reste de l'app).
 6. **Multimodal.** Pipeline voix (reconnaissance, detection d'activite vocale, synthese ;
    cible sous 700 ms) ; puis vision et cameras. Pilotage voix et texte, puis perception.
 7. **Deploiement et routing.** Trois modes a l'onboarding : local, cloud, ou hybride. En
@@ -65,10 +69,12 @@ humaine. La securite n'est pas un vernis applique a la fin, c'est la forme du sy
 Le detail operationnel vit dans `security-baseline.md` (la baseline du jour 1).
 
 ## 4. Modele de plugin
-Chaque plugin porte un **manifeste** : capacites demandees, limites de ressources,
-signature. L'interface est versionnee via un **ABI stable** : WIT / Component Model pour
-les plugins WASM, gRPC / protobuf pour les plugins en process. Cycle de vie clair :
-decouverte, validation (signature, SBOM, politique), chargement isole, supervision, arret.
+Deux types d'execution supportes **des le depart** : **WASM** (bac a sable, recommande) et
+**process** (gRPC, pour le lourd ou le legacy). Chaque plugin porte un **manifeste**
+(capacites, limites de ressources, signature) et une interface versionnee via un **ABI
+stable** : WIT / Component Model pour WASM, gRPC / protobuf pour les plugins en process.
+Cycle de vie : decouverte, validation (signature, SBOM, politique), chargement isole,
+supervision, arret. Detail complet : `plugin-model.md`.
 
 ## 5. Roadmap phasee (a affiner, ne fige pas la vision)
 - **Phase 1 (le squelette).** Noyau orchestrateur minimal plus registre de connecteurs
@@ -81,12 +87,17 @@ decouverte, validation (signature, SBOM, politique), chargement isole, supervisi
 
 Chaque phase garde la securite et la surete comme conditions de passage, pas comme option.
 
-## 6. Points encore a trancher
-- Modele de donnees detaille.
-- Frontiere exacte coeur vs plugins.
-- Format precis du manifeste et de l'ABI de plugin.
-- Transport temps reel (WebSocket / SSE / SignalR / autre), derriere une abstraction.
-- Stack de la surface generative (Blazor vs TS). La recherche penche TS pour l'ecosysteme
-  UI generative, mais le principe polyglotte permet de la traiter comme un sous-projet a part.
+## 6. Points cadres et restes ouverts
+Cadres dans cette iteration : modele de donnees (`data-model.md`) ; frontiere coeur vs
+plugins (ci-dessous) ; manifeste et ABI (`plugin-model.md`) ; transport temps reel
+(WebSocket) ; surface generative (schema neutre plus renderer TS/React).
+
+**Frontiere coeur vs plugins** : le **coeur** porte la machinerie et la frontiere de
+confiance (orchestrateur, registre, hote plus sandbox, permissions, audit, routeur de
+modeles, shell, transport, secrets) ; **tout le domaine est en plugins**, y compris les
+capacites livrees d'office (on mange notre propre nourriture).
+
+Restent a affiner a l'implementation : vocabulaire precis du schema UI neutre ; details
+SQLite vs Postgres et migrations ; regles OPA concretes ; politique de mise a jour des plugins.
 
 > Principe directeur : la confiance ne se decrete pas, elle se verifie.

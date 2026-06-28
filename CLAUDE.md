@@ -27,7 +27,11 @@ Choix actes en Phase 1 (detail dans `docs/ARCHITECTURE.md`) :
   par capacite (compute, latence, sensibilite des donnees, dependances).
 - **Modeles IA** agnostiques, local plus cloud routes (Ollama/vLLM ou cloud).
 - **Ajout pre-mache par defaut plus mode avance** (modeles, plugins, MCP, connecteurs).
-- Transport temps reel non fige (abstraction : WebSocket / SSE / SignalR / autre).
+- **Transport temps reel** : WebSocket par defaut, derriere une abstraction (SignalR =
+  adaptateur .NET optionnel).
+- **Surface generative** : l'orchestrateur emet un schema UI neutre, rendu par un renderer
+  TS/React (mode libre en iframe bac a sable pour l'original).
+- **Plugins** : WASM/WIT et process/gRPC supportes des le depart (`docs/plugin-model.md`).
 
 ## Qui
 Projet d'**Architect Lab** (association loi 1901, Agen), co-detenu avec **Morphaius** (IA)
@@ -50,6 +54,7 @@ et **Bunkerity** (cybersecurite, editeurs du WAF open source BunkerWeb).
 - `README.md` : presentation publique.
 - `docs/VISION.md` : le cap. `docs/ARCHITECTURE.md` : l'architecture v0.
 - `docs/security-baseline.md` : la baseline securite du jour 1.
+- `docs/plugin-model.md` : le contrat de plugin (manifeste + ABI). `docs/data-model.md` : les entites persistees.
 - `docs/design-system.md` : pointeur vers la DA.
 - `.claude/skills/architect-lab-design/` : le **skill design** (invocable `/architect-lab-design`).
   Guidance dans `SKILL.md`, `archon.md` (produit), `voice.md` (texte), `tokens.css` ;
@@ -64,9 +69,9 @@ et **Bunkerity** (cybersecurite, editeurs du WAF open source BunkerWeb).
 - **CLA** obligatoire avant fusion. Relecture mainteneur + oeil securite Bunkerity sur le sensible.
 
 ## A trancher ensemble (ne pas figer seul)
-- Modele de donnees detaille.
-- Frontiere exacte coeur minimal vs plugins ; format precis du manifeste et de l'ABI.
-- Transport temps reel (derriere une abstraction).
-- Stack de la surface generative (Blazor vs TS).
+Les grands forks sont cadres (voir `docs/`). Restent a affiner a l'implementation :
+- Vocabulaire precis du schema UI neutre (surface generative).
+- Details de stockage (SQLite local, Postgres cloud) et migrations.
+- Regles OPA concretes et politique de mise a jour des plugins.
 
 Principe directeur : **la confiance ne se decrete pas, elle se verifie.**

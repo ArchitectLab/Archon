@@ -42,6 +42,34 @@ VS Code, et tu lances une commande. C'est tout.
   d'internet au stade squelette).
 - Port deja pris : change `5240` dans `src/Archon.Web/Properties/launchSettings.json`.
 
+## Optionnel : brancher un cerveau IA
+Sans modele, l'orchestrateur comprend les commandes simples (ex : `meteo Agen`). Avec un
+modele, il comprend le langage naturel (ex : "quel temps a Paris ?"). C'est optionnel :
+l'app tourne dans les deux cas.
+
+Archon parle l'API "chat completions" compatible OpenAI (Ollama en local, ou un service
+cloud). Tu renseignes des variables d'environnement avant de lancer.
+
+En local avec Ollama (https://ollama.com), gratuit et souverain :
+
+1. Installe Ollama, puis dans un terminal : `ollama pull llama3.1`
+2. Lance Archon avec ces variables (exemple macOS / Linux) :
+
+       export ARCHON_MODEL_BASEURL=http://localhost:11434/v1
+       export ARCHON_MODEL_NAME=llama3.1
+       dotnet run --project src/Archon.Web
+
+   Sous Windows (PowerShell) :
+
+       $env:ARCHON_MODEL_BASEURL = "http://localhost:11434/v1"
+       $env:ARCHON_MODEL_NAME = "llama3.1"
+       dotnet run --project src/Archon.Web
+
+En cloud : renseigne aussi `ARCHON_MODEL_APIKEY` (fourni par ton service). La cle se met
+en variable d'environnement, **jamais dans un fichier** du depot.
+
+La console affiche le cerveau actif (ou "repli mots-cles" si aucun modele n'est branche).
+
 ## C'est quoi, sous le capot ?
 - `src/Archon.Core` : le coeur (contrats de plugin, registre, orchestrateur, securite, audit).
 - `src/Archon.Plugins.Meteo` : un vrai plugin (meteo via open-meteo, sans cle).

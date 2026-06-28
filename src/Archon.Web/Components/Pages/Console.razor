@@ -3,6 +3,7 @@
 @inject IOrchestrator Orchestrator
 @inject PluginRegistry Registry
 @inject IAuditLog Audit
+@inject ILanguageModel Brain
 
 <PageTitle>Archon - Console</PageTitle>
 
@@ -14,9 +15,13 @@
         <div class="al-cmd">
             <span class="al-cmd__prompt">&gt;</span>
             <input class="al-cmd__input" @bind="_input" @bind:event="oninput" @onkeydown="OnKey"
-                   placeholder="ex : meteo Agen" />
+                   placeholder="ex : quel temps a Paris ? (ou : meteo Agen)" />
             <button class="al-btn al-btn--spectrum al-btn--sm" @onclick="Send" disabled="@_busy">Envoyer</button>
         </div>
+
+        <p class="al-meta">
+            Cerveau : <span class="al-mono">@Brain.Name</span>@(Brain.IsConfigured ? "" : " (repli mots-cles)")
+        </p>
 
         @if (_busy)
         {

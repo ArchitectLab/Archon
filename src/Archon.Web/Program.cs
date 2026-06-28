@@ -1,3 +1,4 @@
+using Archon.Core.Ai;
 using Archon.Core.Audit;
 using Archon.Core.Orchestration;
 using Archon.Core.Plugins;
@@ -20,8 +21,37 @@ builder.Services.AddSingleton<GrantStore>();
 builder.Services.AddSingleton<IPermissionPolicy>(sp => sp.GetRequiredService<GrantStore>());
 builder.Services.AddSingleton<IApprovalGate, AutoApprovalGate>();
 builder.Services.AddSingleton<IAuditLog, InMemoryAuditLog>();
+
+// --- Cerveau IA (agnostique local/cloud). Configure par variables d'environnement :
+//     ARCHON_MODEL_BASEURL, ARCHON_MODEL_NAME, ARCHON_MODEL_APIKEY (la cle jamais dans le code).
+//     Sans config : NullLanguageModel, et l'orchestrateur retombe sur le resolver mots-cles. ---
+var modelOptions = new ModelOptions
+{
+    BaseUrl = builder.Configuration["Model:BaseUrl"] ?? Environment.GetEnvironmentVariable("ARCHON_MODEL_BASEURL"),
+    Model = builder.Configuration["Model:Name"] ?? Environment.GetEnvironmentVariable("ARCHON_MODEL_NAME"),
+    ApiKey = builder.Configuration["Model:ApiKey"] ?? Environment.GetEnvironmentVariable("ARCHON_MODEL_APIKEY"),
+};
+builder.Services.AddSingleton(modelOptions);
+
+builder.Services.AddSingleton<ILanguageModel>(sp =>
+{
+    var opts = sp.GetRequiredService<ModelOptions>();
+    if (string.IsNullOrWhiteSpace(opts.BaseUrl) || string.IsNullOrWhiteSpace(opts.Model))
+    {
+        return new NullLanguageModel();
+    }
+
+    var http = sp.GetRequiredService<IHttpClientFactory>().CreateClient();
+    http.Timeout = TimeSpan.FromSeconds(60);
+    return new OpenAiCompatibleModel(http, opts);
+});
+
+builder.Services.AddSingleton<IIntentResolver>(sp =>
+    new LlmIntentResolver(sp.GetRequiredService<ILanguageModel>(), new KeywordIntentResolver()));
+
 builder.Services.AddSingleton<IOrchestrator>(sp => new Orchestrator(
     sp.GetRequiredService<PluginRegistry>(),
+    sp.GetRequiredService<IIntentResolver>(),
     sp.GetRequiredService<IPermissionPolicy>(),
     sp.GetRequiredService<IApprovalGate>(),
     sp.GetRequiredService<IAuditLog>()));

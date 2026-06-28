@@ -1,4 +1,5 @@
 using Archon.Core.Plugins;
+using Archon.Core.Ui;
 
 namespace Archon.Plugins.Maison;
 
@@ -72,39 +73,28 @@ public sealed class MaisonPlugin : IPlugin
                 var on = ParseOn(args.TryGetValue("etat", out var e) ? e : "");
                 lock (_lock) _lumieres[piece] = on;
 
-                var ui = new UiBlock
-                {
-                    Kind = "home-action",
-                    Data = new Dictionary<string, string>
-                    {
-                        ["piece"] = Capitalize(piece),
-                        ["etat"] = on ? "allumee" : "eteinte",
-                        ["on"] = on ? "1" : "0",
-                        ["message"] = $"Lumiere {(on ? "allumee" : "eteinte")} : {piece}.",
-                    },
-                };
+                var ui = UiView.Of(
+                    new UiNode { Type = "heading", Text = Capitalize(piece) },
+                    new UiNode { Type = "badge", Text = on ? "allumee" : "eteinte", Tone = on ? "success" : "neutral" },
+                    new UiNode { Type = "note", Text = $"Lumiere {(on ? "allumee" : "eteinte")} : {piece}." });
+
                 return Task.FromResult(CapabilityResult.Ok(ui));
             }
 
             case "maison.etat":
             {
-                string summary;
+                List<UiKeyValue> items;
                 lock (_lock)
                 {
-                    summary = string.Join(", ", _lumieres.Select(kv => $"{kv.Key} : {(kv.Value ? "allumee" : "eteinte")}"));
+                    items = _lumieres
+                        .Select(kv => new UiKeyValue(Capitalize(kv.Key), kv.Value ? "allumee" : "eteinte", kv.Value ? "success" : "neutral"))
+                        .ToList();
                 }
 
-                var ui = new UiBlock
-                {
-                    Kind = "home-action",
-                    Data = new Dictionary<string, string>
-                    {
-                        ["piece"] = "Lumieres",
-                        ["etat"] = summary,
-                        ["on"] = "0",
-                        ["message"] = summary,
-                    },
-                };
+                var ui = UiView.Of(
+                    new UiNode { Type = "heading", Text = "Lumieres" },
+                    new UiNode { Type = "keyvalue", Items = items });
+
                 return Task.FromResult(CapabilityResult.Ok(ui));
             }
 

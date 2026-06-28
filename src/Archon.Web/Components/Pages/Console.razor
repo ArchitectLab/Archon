@@ -52,29 +52,15 @@
         {
             <p class="al-meta">L'orchestrateur reflechit...</p>
         }
-        else if (_message is not null)
+        else if (!string.IsNullOrEmpty(_message))
         {
             <p class="al-msg @(_success ? "al-msg--ok" : "al-msg--err")">@_message</p>
         }
 
-        @if (_ui is { Kind: "weather-card" } w)
+        @if (_ui is not null)
         {
             <article class="al-card al-card--accent">
-                <p class="al-eyebrow">METEO</p>
-                <h3 class="al-card__title">@w.Data["city"] <span class="al-muted">@w.Data["country"]</span></h3>
-                <p class="al-stat">@w.Data["temperature"]<span class="al-unit">&#176;C</span></p>
-                <p class="al-meta">@w.Data["condition"] &middot; vent @w.Data["wind"] km/h</p>
-            </article>
-        }
-        else if (_ui is { Kind: "home-action" } h)
-        {
-            <article class="al-card al-card--accent">
-                <p class="al-eyebrow">MAISON</p>
-                <h3 class="al-card__title">
-                    <span class="al-dot @(h.Data["on"] == "1" ? "al-dot--on" : "al-dot--off")"></span>
-                    @h.Data["piece"]
-                </h3>
-                <p class="al-meta">@h.Data["message"]</p>
+                <UiRenderer View="_ui" />
             </article>
         }
     </div>
@@ -95,10 +81,10 @@
 
         <p class="al-eyebrow">// JOURNAL</p>
         <ul class="al-audit">
-            @foreach (var e in Audit.Recent(10))
+            @foreach (var ev in Audit.Recent(10))
             {
-                <li class="@(e.Allowed ? "" : "al-audit--deny")">
-                    <span class="al-mono">@e.Action</span> @e.Detail
+                <li class="@(ev.Allowed ? "" : "al-audit--deny")">
+                    <span class="al-mono">@ev.Action</span> @ev.Detail
                 </li>
             }
             @if (Audit.Recent(1).Count == 0)
@@ -114,7 +100,7 @@
     private bool _busy;
     private bool _success;
     private string? _message;
-    private UiBlock? _ui;
+    private UiView? _ui;
 
     protected override void OnInitialized() => Approvals.Changed += OnApprovalsChanged;
 

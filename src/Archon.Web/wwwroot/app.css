@@ -188,6 +188,20 @@ a:hover { color: var(--al-violet); }
 .al-approval { border-color: var(--al-line-2); }
 .al-approval__detail { font-family: var(--al-font-mono); font-size: 14px; color: var(--al-paper); margin: 6px 0 14px; }
 
+/* -- Surface generative (schema UI neutre) -- */
+.al-ui-text { color: var(--al-paper); margin: 6px 0; white-space: pre-wrap; }
+.al-badge { display: inline-block; font-family: var(--al-font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid var(--al-line-2); border-radius: 999px; padding: 2px 10px; color: var(--al-slate); margin: 4px 0; }
+.al-kv { list-style: none; margin: 8px 0; padding: 0; }
+.al-kv li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--al-line); font-size: 14px; }
+.al-kv__k { color: var(--al-slate); }
+.al-ui-list { margin: 8px 0; padding-left: 18px; }
+.al-tone-success { color: var(--al-green); }
+.al-tone-info { color: var(--al-blue); }
+.al-tone-warn { color: var(--al-magenta); }
+.al-tone-accent { color: var(--al-magenta); }
+.al-badge.al-tone-success { color: var(--al-green); border-color: rgba(46,204,154,.5); }
+.al-badge.al-tone-warn, .al-badge.al-tone-accent { color: var(--al-magenta); border-color: rgba(230,18,217,.5); }
+
 /* -- Responsive -- */
 @media (max-width: 820px) {
   .al-console { grid-template-columns: 1fr; }

@@ -1,0 +1,67 @@
+@using Archon.Core.Ui
+
+@if (View is not null)
+{
+    @foreach (var node in View.Nodes)
+    {
+        if (node.Type == "heading")
+        {
+            <h3 class="al-card__title">@node.Text</h3>
+        }
+        else if (node.Type == "stat")
+        {
+            <p class="al-stat">@node.Value<span class="al-unit">@node.Unit</span></p>
+            if (!string.IsNullOrEmpty(node.Text))
+            {
+                <p class="al-meta">@node.Text</p>
+            }
+        }
+        else if (node.Type == "badge")
+        {
+            <p class="al-badge @ToneClass(node.Tone)">@node.Text</p>
+        }
+        else if (node.Type == "keyvalue")
+        {
+            <ul class="al-kv">
+                @foreach (var it in node.Items)
+                {
+                    <li><span class="al-kv__k">@it.Key</span><span class="al-kv__v @ToneClass(it.Tone)">@it.Value</span></li>
+                }
+            </ul>
+        }
+        else if (node.Type == "list")
+        {
+            <ul class="al-ui-list">
+                @foreach (var it in node.Items)
+                {
+                    <li>@it.Key</li>
+                }
+            </ul>
+        }
+        else if (node.Type == "rule")
+        {
+            <div class="al-rule"></div>
+        }
+        else if (node.Type == "note")
+        {
+            <p class="al-meta">@node.Text</p>
+        }
+        else
+        {
+            <p class="al-ui-text">@node.Text</p>
+        }
+    }
+}
+
+@code {
+    [Parameter] public UiView? View { get; set; }
+
+    private static string ToneClass(string tone) => tone switch
+    {
+        "success" => "al-tone-success",
+        "info" => "al-tone-info",
+        "warn" => "al-tone-warn",
+        "accent" => "al-tone-accent",
+        _ => "",
+    };
+}

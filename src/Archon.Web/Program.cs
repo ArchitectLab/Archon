@@ -60,6 +60,7 @@ builder.Services.AddSingleton<IIntentResolver>(sp =>
 builder.Services.AddSingleton<IOrchestrator>(sp => new Orchestrator(
     sp.GetRequiredService<PluginRegistry>(),
     sp.GetRequiredService<IIntentResolver>(),
+    sp.GetRequiredService<ILanguageModel>(),
     sp.GetRequiredService<IPermissionPolicy>(),
     sp.GetRequiredService<IApprovalGate>(),
     sp.GetRequiredService<IAuditLog>()));

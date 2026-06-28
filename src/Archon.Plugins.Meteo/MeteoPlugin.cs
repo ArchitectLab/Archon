@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using Archon.Core.Plugins;
+using Archon.Core.Ui;
 
 namespace Archon.Plugins.Meteo;
 
@@ -108,18 +109,11 @@ public sealed class MeteoPlugin : IPlugin
         var wind = current.GetProperty("wind_speed_10m").GetDouble();
         var code = current.GetProperty("weather_code").GetInt32();
 
-        var ui = new UiBlock
-        {
-            Kind = "weather-card",
-            Data = new Dictionary<string, string>
-            {
-                ["city"] = name,
-                ["country"] = country,
-                ["temperature"] = temp.ToString("0.#", inv),
-                ["wind"] = wind.ToString("0.#", inv),
-                ["condition"] = WeatherText(code),
-            },
-        };
+        // Schema UI neutre : titre + grand chiffre + note.
+        var ui = UiView.Of(
+            new UiNode { Type = "heading", Text = $"{name} {country}".Trim() },
+            new UiNode { Type = "stat", Value = temp.ToString("0.#", inv), Unit = "°C", Text = WeatherText(code) },
+            new UiNode { Type = "note", Text = $"Vent {wind.ToString("0.#", inv)} km/h" });
 
         return CapabilityResult.Ok(ui);
     }

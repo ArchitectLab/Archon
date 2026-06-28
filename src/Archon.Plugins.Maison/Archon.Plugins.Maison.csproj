@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Archon.Core\Archon.Core.csproj" />
-    <ProjectReference Include="..\Archon.Plugins.Meteo\Archon.Plugins.Meteo.csproj" />
-    <ProjectReference Include="..\Archon.Plugins.Maison\Archon.Plugins.Maison.csproj" />
   </ItemGroup>
 
 </Project>

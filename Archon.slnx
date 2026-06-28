@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="src/Archon.Core/Archon.Core.csproj" />
   <Project Path="src/Archon.Plugins.Meteo/Archon.Plugins.Meteo.csproj" />
+  <Project Path="src/Archon.Plugins.Maison/Archon.Plugins.Maison.csproj" />
   <Project Path="src/Archon.Web/Archon.Web.csproj" />
 </Solution>

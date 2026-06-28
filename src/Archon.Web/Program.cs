@@ -4,6 +4,7 @@ using Archon.Core.Orchestration;
 using Archon.Core.Plugins;
 using Archon.Core.Registry;
 using Archon.Core.Security;
+using Archon.Plugins.Maison;
 using Archon.Plugins.Meteo;
 using Archon.Web.Components;
 
@@ -19,10 +20,17 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<PluginRegistry>();
 builder.Services.AddSingleton<GrantStore>();
 builder.Services.AddSingleton<IPermissionPolicy>(sp => sp.GetRequiredService<GrantStore>());
-builder.Services.AddSingleton<IApprovalGate, AutoApprovalGate>();
 builder.Services.AddSingleton<IAuditLog, InMemoryAuditLog>();
 
-// --- Cerveau IA (agnostique local/cloud). Configure par variables d'environnement :
+// --- Approbation humaine, configurable (option). Defaut : demander pour les actions. ---
+builder.Services.AddSingleton<ApprovalSettings>();
+builder.Services.AddSingleton<ApprovalQueue>();
+builder.Services.AddSingleton<IApprovalGate>(sp => new InteractiveApprovalGate(
+    sp.GetRequiredService<ApprovalQueue>(),
+    sp.GetRequiredService<ApprovalSettings>(),
+    sp.GetRequiredService<IAuditLog>()));
+
+// --- Cerveau IA (agnostique local/cloud). Config par variables d'environnement :
 //     ARCHON_MODEL_BASEURL, ARCHON_MODEL_NAME, ARCHON_MODEL_APIKEY (la cle jamais dans le code).
 //     Sans config : NullLanguageModel, et l'orchestrateur retombe sur le resolver mots-cles. ---
 var modelOptions = new ModelOptions
@@ -69,18 +77,24 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-// --- Branche le plugin Meteo (premiere partie) ---
+// --- Branche les plugins de premiere partie ---
 {
     var registry = app.Services.GetRequiredService<PluginRegistry>();
     var grants = app.Services.GetRequiredService<GrantStore>();
     var httpFactory = app.Services.GetRequiredService<IHttpClientFactory>();
 
+    // Meteo (lecture).
     var meteo = new MeteoPlugin();
     await meteo.InitializeAsync(new PluginContext { Http = httpFactory.CreateClient() });
     registry.Register(meteo);
-
-    // Deny par defaut : l'utilisateur accorde. Au stade squelette, on accorde la lecture meteo.
     grants.Grant(meteo.Manifest.Id, "meteo.get");
+
+    // Maison (action : domotique simulee).
+    var maison = new MaisonPlugin();
+    await maison.InitializeAsync(new PluginContext { Http = httpFactory.CreateClient() });
+    registry.Register(maison);
+    grants.Grant(maison.Manifest.Id, "maison.lumiere");
+    grants.Grant(maison.Manifest.Id, "maison.etat");
 
     await registry.RefreshHealthAsync();
 }

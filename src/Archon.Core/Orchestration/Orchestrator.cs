@@ -71,7 +71,7 @@ public sealed class Orchestrator : IOrchestrator
         if (!await _approval.RequestApprovalAsync(plugin.Manifest.Id, capability, intent.Args, ct))
         {
             _audit.Append(new AuditEntry(DateTimeOffset.UtcNow, "orchestrator", "invoke.unapproved", target, false));
-            return new OrchestratorResponse(false, "Action en attente d'approbation humaine.", null);
+            return new OrchestratorResponse(false, "Action refusee ou non approuvee a temps.", null);
         }
 
         // 4. Invocation.

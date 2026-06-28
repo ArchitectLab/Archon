@@ -33,6 +33,16 @@ VS Code, et tu lances une commande. C'est tout.
 - La meteo s'affiche, et a droite le plugin **Meteo** apparait **online** dans le registre.
   En dessous, le **journal** trace l'action.
 
+## 6. Une action, avec ton accord
+- Tape `allume la lumiere du salon` puis Entree.
+- Une carte **"Approbation requise"** apparait : clique **Approuver** -> la lumiere passe
+  "allumee" (carte Maison). Clique **Refuser** (ou attends) -> rien ne se passe. C'est la
+  regle : l'IA n'agit pas sans ton accord.
+- En haut, l'interrupteur **Approbation des actions** te laisse choisir :
+  - **Demander mon accord** (par defaut) : chaque action attend ta validation.
+  - **Laisser l'IA agir** : les actions s'executent directement (toujours tracees dans le journal).
+- Avec Ollama branche, tu peux dire en langage naturel : "eteins la lumiere de la cuisine".
+
 ## Arreter
 - Dans le terminal, appuie sur `Ctrl + C`.
 

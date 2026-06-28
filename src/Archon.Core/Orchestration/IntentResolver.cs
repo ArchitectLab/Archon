@@ -34,6 +34,23 @@ public sealed class KeywordIntentResolver : IIntentResolver
             return Task.FromResult<Intent?>(intent);
         }
 
+        foreach (var (verb, etat) in new[] { ("allume", "allumee"), ("eteins", "eteinte"), ("eteint", "eteinte") })
+        {
+            if (input.StartsWith(verb, StringComparison.OrdinalIgnoreCase))
+            {
+                var rest = input[verb.Length..].Trim();
+                var piece = rest.Length == 0
+                    ? "salon"
+                    : rest.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last().Trim('?', '.', '!').ToLowerInvariant();
+                var intent = new Intent("maison.lumiere", new Dictionary<string, string>
+                {
+                    ["piece"] = piece,
+                    ["etat"] = etat,
+                });
+                return Task.FromResult<Intent?>(intent);
+            }
+        }
+
         return Task.FromResult<Intent?>(null);
     }
 }

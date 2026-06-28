@@ -1,9 +1,12 @@
 @page "/console"
 @rendermode InteractiveServer
+@implements IDisposable
 @inject IOrchestrator Orchestrator
 @inject PluginRegistry Registry
 @inject IAuditLog Audit
 @inject ILanguageModel Brain
+@inject ApprovalQueue Approvals
+@inject ApprovalSettings Settings
 
 <PageTitle>Archon - Console</PageTitle>
 
@@ -12,16 +15,38 @@
         <p class="al-eyebrow">// CONSOLE D'ORCHESTRATION</p>
         <h1 class="al-display">Pilote<span class="al-cursor">_</span></h1>
 
+        <div class="al-mode">
+            <span class="al-mode__label">Approbation des actions :</span>
+            <div class="al-seg">
+                <button class="al-seg__btn @(Settings.Mode == ApprovalMode.Ask ? "is-on" : "")"
+                        @onclick="() => SetMode(ApprovalMode.Ask)">Demander mon accord</button>
+                <button class="al-seg__btn @(Settings.Mode == ApprovalMode.AutoRun ? "is-on" : "")"
+                        @onclick="() => SetMode(ApprovalMode.AutoRun)">Laisser l'IA agir</button>
+            </div>
+        </div>
+
         <div class="al-cmd">
             <span class="al-cmd__prompt">&gt;</span>
             <input class="al-cmd__input" @bind="_input" @bind:event="oninput" @onkeydown="OnKey"
-                   placeholder="ex : quel temps a Paris ? (ou : meteo Agen)" />
+                   placeholder="ex : allume la lumiere du salon" />
             <button class="al-btn al-btn--spectrum al-btn--sm" @onclick="Send" disabled="@_busy">Envoyer</button>
         </div>
 
         <p class="al-meta">
             Cerveau : <span class="al-mono">@Brain.Name</span>@(Brain.IsConfigured ? "" : " (repli mots-cles)")
         </p>
+
+        @foreach (var pa in Approvals.Pending())
+        {
+            <article class="al-card al-card--accent al-approval">
+                <p class="al-eyebrow">APPROBATION REQUISE</p>
+                <p class="al-approval__detail">@pa.Detail</p>
+                <div class="al-actions">
+                    <button class="al-btn al-btn--spectrum al-btn--sm" @onclick="() => Approvals.Resolve(pa.Id, true)">Approuver</button>
+                    <button class="al-btn al-btn--secondary al-btn--sm" @onclick="() => Approvals.Resolve(pa.Id, false)">Refuser</button>
+                </div>
+            </article>
+        }
 
         @if (_busy)
         {
@@ -32,13 +57,24 @@
             <p class="al-msg @(_success ? "al-msg--ok" : "al-msg--err")">@_message</p>
         }
 
-        @if (_ui is { Kind: "weather-card" } card)
+        @if (_ui is { Kind: "weather-card" } w)
         {
             <article class="al-card al-card--accent">
                 <p class="al-eyebrow">METEO</p>
-                <h3 class="al-card__title">@card.Data["city"] <span class="al-muted">@card.Data["country"]</span></h3>
-                <p class="al-stat">@card.Data["temperature"]<span class="al-unit">&#176;C</span></p>
-                <p class="al-meta">@card.Data["condition"] &middot; vent @card.Data["wind"] km/h</p>
+                <h3 class="al-card__title">@w.Data["city"] <span class="al-muted">@w.Data["country"]</span></h3>
+                <p class="al-stat">@w.Data["temperature"]<span class="al-unit">&#176;C</span></p>
+                <p class="al-meta">@w.Data["condition"] &middot; vent @w.Data["wind"] km/h</p>
+            </article>
+        }
+        else if (_ui is { Kind: "home-action" } h)
+        {
+            <article class="al-card al-card--accent">
+                <p class="al-eyebrow">MAISON</p>
+                <h3 class="al-card__title">
+                    <span class="al-dot @(h.Data["on"] == "1" ? "al-dot--on" : "al-dot--off")"></span>
+                    @h.Data["piece"]
+                </h3>
+                <p class="al-meta">@h.Data["message"]</p>
             </article>
         }
     </div>
@@ -59,7 +95,7 @@
 
         <p class="al-eyebrow">// JOURNAL</p>
         <ul class="al-audit">
-            @foreach (var e in Audit.Recent(8))
+            @foreach (var e in Audit.Recent(10))
             {
                 <li class="@(e.Allowed ? "" : "al-audit--deny")">
                     <span class="al-mono">@e.Action</span> @e.Detail
@@ -79,6 +115,16 @@
     private bool _success;
     private string? _message;
     private UiBlock? _ui;
+
+    protected override void OnInitialized() => Approvals.Changed += OnApprovalsChanged;
+
+    private void OnApprovalsChanged() => InvokeAsync(StateHasChanged);
+
+    private void SetMode(ApprovalMode mode)
+    {
+        Settings.Mode = mode;
+        StateHasChanged();
+    }
 
     private async Task Send()
     {
@@ -105,4 +151,6 @@
             await Send();
         }
     }
+
+    public void Dispose() => Approvals.Changed -= OnApprovalsChanged;
 }

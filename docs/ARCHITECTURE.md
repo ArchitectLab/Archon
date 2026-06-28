@@ -30,6 +30,11 @@ deploiements .NET ; SSE pour les flux unidirectionnels simples.
 Principe directeur : **la securite se met la ou s'execute le code non fiable, pas dans le
 langage du coeur.**
 
+> **Decision : socle d'orchestration.** Le cerveau (orchestrateur, appel d'outils, MCP,
+> multi-agents) s'appuie sur **Microsoft Agent Framework** + le **SDK MCP officiel C#**
+> (tous deux MIT), **derriere nos contrats** : chaque appel d'outil traverse notre garde
+> (permission deny-by-default, approbation, audit). Voir `docs/adr/0001-socle-orchestration-mcp.md`.
+
 ## 2. Les sept piliers
 
 1. **Noyau orchestrateur a etats.** Un moteur d'agents (modele type graphe : noeuds,

@@ -23,6 +23,10 @@ Choix actes en Phase 1 (detail dans `docs/ARCHITECTURE.md`) :
   la sienne derriere des contrats stables (MCP ; WASM Component Model/WIT ; gRPC ; HTTP).
 - **Securite a la frontiere de confiance** : le code non fiable tourne en bac a sable
   **WASM/WASI**. Baseline du jour 1 dans `docs/security-baseline.md`.
+- **Socle d'orchestration** : le cerveau (orchestrateur, outils, MCP, multi-agents) s'appuie
+  sur **Microsoft Agent Framework** + le **SDK MCP officiel C#** (MIT), **derriere nos
+  contrats** (chaque appel d'outil passe par permission deny-by-default, approbation, audit).
+  .NET conserve. Voir `docs/adr/0001-socle-orchestration-mcp.md`.
 - **Deploiement** : 3 modes a l'onboarding (local / cloud / hybride). En hybride, routage
   par capacite (compute, latence, sensibilite des donnees, dependances).
 - **Modeles IA** agnostiques, local plus cloud routes (Ollama/vLLM ou cloud).

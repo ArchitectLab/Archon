@@ -1,0 +1,152 @@
+/* ============================================================
+   Architect Lab : tokens de design (drop-in)
+   Importe ce fichier dans n'importe quel projet (site OU Archon)
+   pour heriter de toute la DA. N'utilise jamais de hex en dur
+   ailleurs : passe toujours par ces variables.
+   Regle d'or : le spectre vit sur les traits, jamais en aplat (<= 10 %).
+   ============================================================ */
+:root {
+  /* -- Spectre (les 4 couleurs signal) -- */
+  --al-green:   #2ECC9A;  /* depart / succes / online   */
+  --al-blue:    #2A6BF2;  /* liens, boutons primaires   */
+  --al-violet:  #8A2BE2;  /* hover, second accent       */
+  --al-magenta: #E612D9;  /* l'etincelle, le curseur    */
+
+  /* Bouts de spectre "encre" (assombris pour fond clair / impression) */
+  --al-green-ink:   #1FA87C;
+  --al-magenta-ink: #D012C8;
+
+  /* -- Neutres : le blueprint -- */
+  --al-void:   #0B1220;   /* fond sombre primaire        */
+  --al-panel:  #111A2C;   /* surfaces surelevees / cartes */
+  --al-line:   #1E2A40;   /* lignes de grille, bordures   */
+  --al-line-2: #3A4A66;   /* filet plus fort / cartouche  */
+  --al-slate:  #8B97A8;   /* texte secondaire             */
+  --al-paper:  #F5F7FA;   /* texte primaire / fond clair  */
+
+  /* -- Alias semantiques -- */
+  --al-bg:            var(--al-void);
+  --al-surface:       var(--al-panel);
+  --al-border:        var(--al-line);
+  --al-border-strong: var(--al-line-2);
+  --al-text:          var(--al-paper);
+  --al-text-muted:    var(--al-slate);
+  --al-link:          var(--al-blue);
+  --al-link-hover:    var(--al-violet);
+  --al-accent:        var(--al-magenta);
+  --al-success:       var(--al-green);
+  --al-danger:        var(--al-magenta);
+
+  /* -- Le spectre en gradients -- */
+  --al-spectrum:      linear-gradient(90deg, #2ECC9A 0%, #2A6BF2 38%, #8A2BE2 70%, #E612D9 100%);
+  --al-spectrum-diag: linear-gradient(45deg, #2ECC9A 0%, #2A6BF2 38%, #8A2BE2 70%, #E612D9 100%);
+  --al-spectrum-ink:  linear-gradient(90deg, #1FA87C 0%, #2A6BF2 38%, #8A2BE2 70%, #D012C8 100%);
+
+  /* -- Typographie -- */
+  --al-font-display: 'Space Grotesk', system-ui, sans-serif;
+  --al-font-body:    'Inter', system-ui, sans-serif;
+  --al-font-mono:    'JetBrains Mono', ui-monospace, 'Consolas', monospace;
+
+  --al-text-xs:   12px;
+  --al-text-sm:   14px;
+  --al-text-base: 16px;
+  --al-text-lg:   18px;
+  --al-text-xl:   24px;   /* h3 */
+  --al-text-2xl:  32px;
+  --al-text-3xl:  40px;
+  --al-text-4xl:  56px;   /* h1 */
+
+  --al-weight-regular:  400;
+  --al-weight-medium:   500;
+  --al-weight-semibold: 600;
+  --al-weight-bold:     700;
+
+  --al-leading-tight: 1.15;
+  --al-leading-snug:  1.35;
+  --al-leading-body:  1.65;
+
+  --al-tracking-display: -0.02em;  /* titres serres            */
+  --al-tracking-tag:      0.2em;   /* tags mono majuscules     */
+  --al-tracking-label:    0.04em;
+
+  /* -- Espacement (echelle) -- */
+  --al-space-1: 4px;
+  --al-space-2: 8px;
+  --al-space-3: 12px;
+  --al-space-4: 16px;
+  --al-space-5: 24px;
+  --al-space-6: 32px;
+  --al-space-7: 48px;
+  --al-space-8: 64px;
+  --al-space-9: 96px;
+
+  /* -- Rayons -- */
+  --al-radius-sm:   6px;
+  --al-radius-md:   12px;
+  --al-radius-lg:   16px;
+  --al-radius-pill: 999px;
+
+  /* -- Bordures -- */
+  --al-border-width: 1px;
+  --al-border-hair:  1px solid var(--al-line);
+  --al-border-card:  1px solid var(--al-line);
+
+  /* -- Ombres -- */
+  --al-shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --al-shadow-md: 0 8px 24px rgba(0,0,0,0.45);
+  --al-shadow-lg: 0 24px 64px rgba(0,0,0,0.55);
+
+  /* -- Glows (focus / etincelle) -- */
+  --al-glow-blue:    0 0 0 3px rgba(42,107,242,0.35);
+  --al-glow-magenta: 0 0 24px rgba(230,18,217,0.35);
+
+  /* -- Grille blueprint -- */
+  --al-grid-size: 48px;
+}
+
+/* ============================================================
+   Base minimale (optionnelle). Reprend l'ambiance du site.
+   ============================================================ */
+body {
+  background: var(--al-void);
+  color: var(--al-text);
+  font-family: var(--al-font-body);
+  line-height: var(--al-leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 {
+  font-family: var(--al-font-display);
+  letter-spacing: var(--al-tracking-display);
+  line-height: var(--al-leading-tight);
+  color: var(--al-paper);
+}
+a { color: var(--al-link); text-decoration: none; }
+a:hover { color: var(--al-link-hover); }
+
+/* Texte au spectre (titres mis en avant) */
+.al-spectrum-text {
+  background: var(--al-spectrum);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fond blueprint : void + grille 48px */
+.al-blueprint {
+  background-color: var(--al-void);
+  background-image:
+    linear-gradient(var(--al-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--al-line) 1px, transparent 1px);
+  background-size: var(--al-grid-size) var(--al-grid-size);
+}
+
+/* Filet spectre (separateur / soulignement) */
+.al-rule { height: 2px; border: 0; background: var(--al-spectrum); opacity: .8; }
+
+/* Anneau de focus accessible */
+:focus-visible { outline: none; box-shadow: var(--al-glow-blue); border-radius: var(--al-radius-sm); }
+
+/* Respect du mouvement reduit */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}

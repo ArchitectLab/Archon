@@ -50,6 +50,16 @@ public sealed class ArchonDatabase
                 html          TEXT NOT NULL,
                 created_at    TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS connectors (
+                id             TEXT PRIMARY KEY,
+                kind           TEXT NOT NULL,
+                name           TEXT NOT NULL,
+                endpoint       TEXT NOT NULL,
+                enabled        INTEGER NOT NULL,
+                secret_env_var TEXT NOT NULL,
+                config_json    TEXT NOT NULL,
+                created_at     TEXT NOT NULL
+            );
             """;
         cmd.ExecuteNonQuery();
     }

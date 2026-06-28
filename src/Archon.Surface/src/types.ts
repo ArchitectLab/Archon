@@ -52,10 +52,50 @@ export interface StatePayload {
   journal: JournalItem[];
   approvals: ApprovalItem[];
   mode: string; // "Ask" | "AutoRun"
+  theme: string; // JSON ihm.theme
 }
 
 export interface ChatResponse {
   ok: boolean;
   message: string;
   ui?: UiView | null;
+}
+
+// --- Gestion (connecteurs) ---
+export interface Capability {
+  id: string;
+  title: string;
+  impact: string; // "Read" | "Write" | "Consequential"
+  granted: boolean;
+}
+
+export interface Plugin {
+  id: string;
+  name: string;
+  version: string;
+  author: string;
+  online: boolean;
+  capabilities: Capability[];
+}
+
+export interface ConnectorItem {
+  id: string;
+  kind: string; // "mcp" | "http"
+  name: string;
+  endpoint: string;
+  enabled: boolean;
+  secretEnvVar: string;
+  secretPresent: boolean;
+}
+
+export interface ModelInfo {
+  name: string;
+  configured: boolean;
+}
+
+export interface Settings {
+  preferences: string;
+  theme: string;
+  skill: string;
+  model: ModelInfo;
 }

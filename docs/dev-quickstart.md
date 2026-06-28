@@ -26,44 +26,49 @@ VS Code, et tu lances une commande. C'est tout.
 - Quand tu vois `Now listening on: http://localhost:5240`, ouvre cette adresse dans ton
   navigateur.
 
-## 5. Tester l'app (chat + IHM)
-- La **page d'accueil** s'affiche (fond sombre, le spectre, le logo).
-- Clique **Ouvrir l'app**. Tu arrives sur `/app` : a gauche un **chat**, a droite l'**IHM**
-  (un canvas vide pour l'instant : c'est l'espace que l'IA va remplir).
+## 5. Archon : l'accueil, le chat et l'IHM
+- A l'adresse `http://localhost:5240` s'ouvre **Archon** : l'**Accueil** sobre (le "coeur"
+  reactif, une phrase, des actions, l'etat). En haut, la navigation : **Accueil / Archon /
+  Connecteurs / Reglages**.
+- Clique **Entrer dans Archon** (ou l'onglet **Archon**) : a gauche un **chat**, a droite
+  l'**IHM**, le canvas que l'IA pilote.
 - Dans le chat, demande par exemple :
 
       mets sur l'IHM la meteo d'Agen rafraichie toutes les 2 minutes
 
-- Un **widget meteo** apparait a droite, sur l'IHM. Il affiche la temperature, une petite
-  courbe (24 h), et **se met a jour tout seul** (toutes les 2 minutes ici).
-- Recharge la page (F5) : le widget **est toujours la** (il est persiste). L'IHM garde ce
-  que l'IA y a pose.
-- Tu peux aussi demander un visuel libre, par exemple :
+- Un **widget meteo** apparait a droite. Il affiche la temperature, une petite courbe (24 h),
+  et **se met a jour tout seul**. Recharge la page (F5) : il **reste** (il est persiste).
+- L'IA peut aussi personnaliser l'IHM en direct :
 
-      mets sur l'IHM un petit encart qui souhaite la bienvenue, en violet
+      passe l'IHM en violet
+      retire le widget meteo
+      mets sur l'IHM un petit encart de bienvenue, soigne
 
-  L'IA compose un fragment HTML/CSS, rendu dans un **bac a sable** (aucun script execute).
-- Pour retirer un widget : bouton **retirer** en haut du widget. Pour tout vider :
-  demande "vide l'IHM".
+  Le theme change tout de suite ; les visuels libres sont composes en HTML/CSS et rendus en
+  **bac a sable** (aucun script execute).
 
-> Note : sans cerveau IA branche (voir plus bas), le chat comprend surtout les commandes
-> simples (`meteo Agen`, `allume la lumiere du salon`). La pose libre sur l'IHM en langage
-> naturel ("mets la meteo sur l'IHM") tire le meilleur d'un modele branche (Ollama ou cloud).
+> Note : sans cerveau IA branche (voir plus bas), le chat comprend les commandes courantes
+> (`meteo Agen`, `allume la lumiere du salon`, "mets la meteo sur l'IHM", "vide l'IHM"). Le
+> langage naturel libre et les visuels originaux tirent le meilleur d'un modele branche.
 
-## 5 bis. La console technique
-- Le lien **La console** (`/console`) garde l'outil d'origine : une entree, le registre des
-  plugins (online/offline), et le journal d'audit. Tape `meteo Agen` pour voir la meteo
-  (avec sa courbe), et a droite le plugin **Meteo** **online** dans le registre.
+## 6. Connecteurs et Reglages
+- Onglet **Connecteurs** : la liste des **plugins** avec leurs **capacites** et un interrupteur
+  de **permission** par capacite (tout est **refuse par defaut** : tu vois et tu regles). En
+  dessous, tu peux **declarer** un serveur **MCP** (par URL) ou un connecteur **HTTP**, le
+  tester, l'activer/desactiver. Un secret se reference par le **nom d'une variable d'env**,
+  jamais en clair.
+- Onglet **Reglages** : le **mode d'approbation** (demander mon accord / laisser l'IA agir),
+  le cerveau IA actif, le **theme** (accent, densite), les **preferences d'affichage**, et le
+  **skill Archon** (le prompt systeme qui dit a l'IA comment se servir de l'IHM : tu peux le
+  reecrire).
 
-## 6. Une action, avec ton accord
-- Tape `allume la lumiere du salon` puis Entree.
-- Une carte **"Approbation requise"** apparait : clique **Approuver** -> la lumiere passe
-  "allumee" (carte Maison). Clique **Refuser** (ou attends) -> rien ne se passe. C'est la
-  regle : l'IA n'agit pas sans ton accord.
-- En haut, l'interrupteur **Approbation des actions** te laisse choisir :
-  - **Demander mon accord** (par defaut) : chaque action attend ta validation.
-  - **Laisser l'IA agir** : les actions s'executent directement (toujours tracees dans le journal).
-- Avec Ollama branche, tu peux dire en langage naturel : "eteins la lumiere de la cuisine".
+## 7. Une action, avec ton accord
+- Dans le chat d'Archon, tape `allume la lumiere du salon` puis Entree.
+- En mode "Demander mon accord" (par defaut, reglable dans **Reglages**), une carte
+  **"Approbation requise"** apparait : **Approuver** -> la lumiere passe "allumee" ;
+  **Refuser** (ou attendre) -> rien. C'est la regle : l'IA n'agit pas sans ton accord.
+- La **console technique** reste disponible sous `/console` (une entree, le registre, le
+  journal d'audit) : pratique pour tester `meteo Agen` rapidement.
 
 ## Arreter
 - Dans le terminal, appuie sur `Ctrl + C`.
@@ -100,26 +105,26 @@ En local avec Ollama (https://ollama.com), gratuit et souverain :
 En cloud : renseigne aussi `ARCHON_MODEL_APIKEY` (fourni par ton service). La cle se met
 en variable d'environnement, **jamais dans un fichier** du depot.
 
-La console affiche le cerveau actif (ou "repli mots-cles" si aucun modele n'est branche).
+Les Reglages d'Archon affichent le cerveau actif (ou "repli mots-cles" si aucun modele branche).
 
 ## C'est quoi, sous le capot ?
 - `src/Archon.Core` : le coeur (contrats de plugin, registre, orchestrateur, securite, audit,
-  schema UI neutre, modele de widget IHM).
-- `src/Archon.Data` : la persistance locale (SQLite : reglages, journal, widgets de l'IHM).
+  schema UI neutre, modele de widget IHM, modele de connecteur, skill Archon).
+- `src/Archon.Data` : la persistance locale (SQLite : reglages, journal, widgets, connecteurs).
 - `src/Archon.Plugins.Meteo` / `Archon.Plugins.Maison` : deux vrais plugins (meteo, domotique simulee).
 - `src/Archon.Plugins.Ihm` : le plugin qui donne a l'IA la main sur l'IHM (poser un widget,
-  composer un visuel libre, vider, memoriser des preferences d'affichage).
-- `src/Archon.Web` : l'app Blazor (accueil + console) **et** l'API HTTP/JSON (`/api/...`) qui
-  sert la surface React sous `/app`.
-- `src/Archon.Surface` : la surface React (chat + IHM). Son build est **deja commite** dans
-  `src/Archon.Web/wwwroot/app`, donc tu n'as pas besoin de Node pour lancer Archon.
+  composer un visuel libre, changer le theme, retirer, vider, memoriser des preferences).
+- `src/Archon.Web` : le coeur web : l'API HTTP/JSON (`/api/...`) qui sert la surface **Archon**
+  a la racine `/`, plus la console technique sous `/console`.
+- `src/Archon.Surface` : la surface React (Accueil + Archon + Connecteurs + Reglages). Son build
+  est **deja commite** dans `src/Archon.Web/wwwroot/archon`, donc pas besoin de Node pour lancer.
 
 ### Optionnel : retoucher la surface React
-Seulement si tu veux modifier le chat ou l'IHM (il faut Node 20+) :
+Seulement si tu veux modifier l'interface (il faut Node 20+) :
 
     cd src/Archon.Surface
     npm install
     npm run dev      # dev avec rechargement a chaud (proxy /api -> http://localhost:5240)
-    npm run build    # regenere le bundle commite dans ../Archon.Web/wwwroot/app
+    npm run build    # regenere le bundle commite dans ../Archon.Web/wwwroot/archon
 
 Le pourquoi de tout ca : `docs/ARCHITECTURE.md` et `docs/plugin-model.md`.

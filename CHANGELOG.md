@@ -23,4 +23,12 @@ versionnage semantique (https://semver.org).
   Widgets "capacite" (ex. meteo rafraichie toutes les 2 min, avec sparkline) et widgets "html"
   libres rendus en bac a sable. Preferences d'affichage persistees et injectees dans le prompt.
   Le build React est commite (lancement sans Node).
+- Cockpit Archon (Phase 2, increment 1) : la surface devient le produit, servie a la racine `/`
+  (Accueil sobre facon Jarvis avec un "coeur" reactif, Archon = chat + IHM, Connecteurs,
+  Reglages ; navigation par hash ; renommage "App" -> "Archon"). Page **Connecteurs** : gestion
+  des plugins et de leurs permissions (deny par defaut, reglables), declaration de serveurs MCP
+  ou de connecteurs HTTP (persistes ; secrets par reference de variable d'env). **Reglages** :
+  mode d'approbation, cerveau IA, theme (accent/densite), preferences, editeur du **skill Archon**
+  (prompt systeme injecte). IHM pilotable en direct par l'IA : `ihm.theme`, `ihm.remove`. La
+  console technique reste sous `/console`.
 

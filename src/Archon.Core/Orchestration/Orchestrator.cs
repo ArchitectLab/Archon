@@ -117,7 +117,11 @@ public sealed class Orchestrator : IOrchestrator
         {
             try
             {
-                var system = "Tu es l'assistant d'Archon. Reponds brievement et utilement en francais, sans inventer.";
+                var skill = _settings?.Get(ArchonSkill.SettingsKey);
+                if (string.IsNullOrWhiteSpace(skill)) skill = ArchonSkill.Default;
+
+                var system = skill +
+                    "\n\nTu es l'assistant d'Archon. Reponds brievement et utilement en francais, sans inventer.";
                 var prefs = _settings?.Get("ihm.preferences");
                 if (!string.IsNullOrWhiteSpace(prefs))
                 {

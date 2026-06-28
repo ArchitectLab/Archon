@@ -20,6 +20,11 @@ public sealed class GrantStore : IPermissionPolicy
         lock (_lock) _grants.Add((pluginId, capabilityId));
     }
 
+    public void Revoke(string pluginId, string capabilityId)
+    {
+        lock (_lock) _grants.Remove((pluginId, capabilityId));
+    }
+
     public bool IsAllowed(string pluginId, string capabilityId)
     {
         lock (_lock) return _grants.Contains((pluginId, capabilityId));

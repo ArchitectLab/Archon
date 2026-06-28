@@ -1,14 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// La surface est servie par Archon.Web sous /app ; le build atterrit dans wwwroot/app
-// (commite, pour que l'utilisateur lance avec `dotnet run` sans Node).
+// Archon EST le produit : la surface est servie a la racine "/" par Archon.Web, et ses assets
+// vivent sous /archon/. Le build atterrit dans wwwroot/archon (commite, lancement sans Node).
 // En dev (`npm run dev`), /api est relaye vers le coeur .NET (http://localhost:5240).
 export default defineConfig({
   plugins: [react()],
-  base: '/app/',
+  base: '/archon/',
   build: {
-    outDir: '../Archon.Web/wwwroot/app',
+    outDir: '../Archon.Web/wwwroot/archon',
     emptyOutDir: true,
   },
   server: {

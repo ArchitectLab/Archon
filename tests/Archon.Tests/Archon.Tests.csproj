@@ -16,7 +16,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Archon.Core\Archon.Core.csproj" />
+    <ProjectReference Include="..\..\src\Archon.Data\Archon.Data.csproj" />
     <ProjectReference Include="..\..\src\Archon.Plugins.Maison\Archon.Plugins.Maison.csproj" />
+    <ProjectReference Include="..\..\src\Archon.Plugins.Ihm\Archon.Plugins.Ihm.csproj" />
   </ItemGroup>
 
 </Project>

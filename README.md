@@ -23,14 +23,18 @@ deja (voir plus bas). C'est le meilleur moment pour contribuer.
 - **Design system** : `docs/design-system.md` (skill Claude Code `architect-lab-design`).
 
 ## Apercu
-- **Accueil** : une page on-brand (fond void, grille blueprint, le spectre, le curseur magenta).
-- **App (chat + IHM)** : a gauche un chat, a droite l'**IHM**, un canvas vivant que l'IA pilote.
-  Tu lui demandes, elle y pose des elements **persistants** et **rafraichis a la volee** (ex :
-  "mets sur l'IHM la meteo d'Agen rafraichie toutes les 2 minutes"), ou compose un visuel libre
-  (HTML/CSS) rendu en bac a sable.
-- **Console d'orchestration** : l'outil technique. Tu parles a l'IA, elle comprend, branche
-  les bons plugins, agit avec ton accord. A droite, le registre des plugins (online/offline)
-  et le journal d'audit.
+Archon est un cockpit unifie, servi a la racine `/` (fond void, grille blueprint, le spectre,
+un "coeur" reactif facon tour de controle) :
+- **Accueil** : sobre, le coeur, les actions, l'etat en un coup d'oeil.
+- **Archon (chat + IHM)** : a gauche un chat, a droite l'**IHM**, un canvas vivant que l'IA
+  pilote. Tu lui demandes, elle y pose des elements **persistants** et **rafraichis a la volee**
+  (ex : "mets sur l'IHM la meteo d'Agen rafraichie toutes les 2 minutes"), compose des visuels
+  libres (HTML/CSS, en bac a sable), change le theme en direct. Un **skill** (prompt systeme,
+  editable) lui dit comment s'en servir et l'invite a etre originale.
+- **Connecteurs** : gerer les plugins (et leurs permissions, refusees par defaut) et declarer
+  des serveurs MCP ou des connecteurs HTTP (secrets par reference de variable d'env, jamais en clair).
+- **Reglages** : mode d'approbation, cerveau IA, theme, preferences, skill Archon.
+- **Console** (`/console`) : l'outil technique d'origine (entree, registre online/offline, journal).
 
 ## Lancer en local (Phase 1)
 Un squelette tourne deja (Blazor + .NET 10) : accueil, app (chat + IHM), console, un cerveau

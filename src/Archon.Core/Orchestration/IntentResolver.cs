@@ -159,9 +159,12 @@ public sealed class LlmIntentResolver : IIntentResolver
 
         try
         {
+            var skill = _settings?.Get(ArchonSkill.SettingsKey);
+            if (string.IsNullOrWhiteSpace(skill)) skill = ArchonSkill.Default;
+
             var messages = new List<ModelMessage>
             {
-                new("system", BuildSystemPrompt(available, _settings?.Get("ihm.preferences"))),
+                new("system", BuildSystemPrompt(available, _settings?.Get("ihm.preferences"), skill)),
                 new("user", input),
             };
             var raw = await _model.CompleteAsync(messages, ct);
@@ -174,9 +177,15 @@ public sealed class LlmIntentResolver : IIntentResolver
         }
     }
 
-    private static string BuildSystemPrompt(IReadOnlyList<CapabilitySpec> available, string? preferences)
+    private static string BuildSystemPrompt(IReadOnlyList<CapabilitySpec> available, string? preferences, string? skill)
     {
         var sb = new StringBuilder();
+        if (!string.IsNullOrWhiteSpace(skill))
+        {
+            sb.AppendLine(skill);
+            sb.AppendLine();
+        }
+
         sb.AppendLine("Tu es l'orchestrateur d'Archon. A partir de la demande de l'utilisateur,");
         sb.AppendLine("choisis UNE capacite parmi la liste et extrais ses parametres.");
         sb.AppendLine("Reponds UNIQUEMENT en JSON : {\"capability\": \"id\", \"args\": {\"nom\": \"valeur\"}}.");

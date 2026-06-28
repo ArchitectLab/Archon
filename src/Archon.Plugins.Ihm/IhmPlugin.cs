@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Archon.Core.Data;
 using Archon.Core.Ihm;
@@ -91,6 +92,29 @@ public sealed class IhmPlugin : IPlugin
             Impact = ImpactLevel.Read,
             Parameters = [new CapabilityParam("text", "La preference d'affichage a memoriser")],
         },
+        new Capability
+        {
+            Id = "ihm.theme",
+            Title = "Changer le theme de l'IHM",
+            Description =
+                "Personnalise l'apparence de l'IHM en direct. args : accent (couleur d'accent, ex. " +
+                "violet/bleu/vert/magenta ou un hex #8A2BE2), density (compact|normal|aere). " +
+                "Tout est optionnel ; ne change que ce qui est fourni.",
+            Impact = ImpactLevel.Read,
+            Parameters =
+            [
+                new CapabilityParam("accent", "Couleur d'accent (nom ou hex)", Required: false),
+                new CapabilityParam("density", "Densite : compact | normal | aere", Required: false),
+            ],
+        },
+        new Capability
+        {
+            Id = "ihm.remove",
+            Title = "Retirer un widget de l'IHM",
+            Description = "Retire un widget cible de l'IHM. args : title (titre, ou un bout du titre).",
+            Impact = ImpactLevel.Read,
+            Parameters = [new CapabilityParam("title", "Titre (ou fragment) du widget a retirer")],
+        },
     ];
 
     public Task InitializeAsync(PluginContext context, CancellationToken ct = default) => Task.CompletedTask;
@@ -108,6 +132,8 @@ public sealed class IhmPlugin : IPlugin
             "ihm.html" => Html(args),
             "ihm.clear" => Clear(),
             "ihm.set_preferences" => SetPreferences(args),
+            "ihm.theme" => Theme(args),
+            "ihm.remove" => RemoveWidget(args),
             _ => CapabilityResult.Fail($"Capacite inconnue : {capabilityId}"),
         });
     }
@@ -226,6 +252,85 @@ public sealed class IhmPlugin : IPlugin
         return CapabilityResult.Ok(UiView.Of(
             new UiNode { Type = "heading", Text = "Preference memorisee" },
             new UiNode { Type = "note", Text = text.Trim() }));
+    }
+
+    private CapabilityResult Theme(IReadOnlyDictionary<string, string> args)
+    {
+        var accent = NormalizeAccent(Arg(args, "accent"));
+        var density = Arg(args, "density").Trim().ToLowerInvariant();
+
+        // Lit le theme existant (JSON simple) pour ne changer que ce qui est fourni.
+        string curAccent = "", curDensity = "";
+        var existing = _settings.Get("ihm.theme");
+        if (!string.IsNullOrWhiteSpace(existing))
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(existing);
+                if (doc.RootElement.TryGetProperty("accent", out var a)) curAccent = a.GetString() ?? "";
+                if (doc.RootElement.TryGetProperty("density", out var d)) curDensity = d.GetString() ?? "";
+            }
+            catch
+            {
+                // theme illisible : on repart de zero.
+            }
+        }
+
+        var finalAccent = string.IsNullOrWhiteSpace(accent) ? curAccent : accent;
+        var finalDensity = density is "compact" or "normal" or "aere" ? density : curDensity;
+
+        _settings.Set("ihm.theme", JsonSerializer.Serialize(new { accent = finalAccent, density = finalDensity }));
+
+        return CapabilityResult.Ok(UiView.Of(
+            new UiNode { Type = "heading", Text = "Theme de l'IHM mis a jour" },
+            new UiNode
+            {
+                Type = "keyvalue",
+                Items =
+                [
+                    new UiKeyValue("Accent", string.IsNullOrWhiteSpace(finalAccent) ? "(defaut)" : finalAccent),
+                    new UiKeyValue("Densite", string.IsNullOrWhiteSpace(finalDensity) ? "normal" : finalDensity),
+                ],
+            },
+            new UiNode { Type = "note", Text = "Applique en direct sur l'IHM." }));
+    }
+
+    private CapabilityResult RemoveWidget(IReadOnlyDictionary<string, string> args)
+    {
+        var title = Arg(args, "title").Trim();
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            return CapabilityResult.Fail("Titre manquant (parametre 'title').");
+        }
+
+        var match = _store.List().FirstOrDefault(w =>
+            w.Title.Contains(title, StringComparison.OrdinalIgnoreCase) ||
+            title.Contains(w.Title, StringComparison.OrdinalIgnoreCase));
+        if (match is null)
+        {
+            return CapabilityResult.Fail($"Aucun widget ne correspond a \"{title}\".");
+        }
+
+        _store.Remove(match.Id);
+        return CapabilityResult.Ok(UiView.Of(
+            new UiNode { Type = "heading", Text = "Widget retire" },
+            new UiNode { Type = "note", Text = $"\"{match.Title}\" a ete retire de l'IHM." }));
+    }
+
+    // Traduit un nom de couleur courant vers un hex du spectre Archon ; sinon laisse tel quel.
+    private static string NormalizeAccent(string accent)
+    {
+        accent = accent.Trim();
+        if (accent.Length == 0) return "";
+        if (accent.StartsWith('#')) return accent;
+        return accent.ToLowerInvariant() switch
+        {
+            "violet" or "purple" or "pourpre" => "#8A2BE2",
+            "bleu" or "blue" => "#2A6BF2",
+            "vert" or "green" => "#2ECC9A",
+            "magenta" or "rose" or "pink" or "fuchsia" => "#E612D9",
+            _ => accent,
+        };
     }
 
     private static string Arg(IReadOnlyDictionary<string, string> args, string key)

@@ -12,7 +12,7 @@ Si ces obligations ne conviennent pas a ton usage, par exemple :
 alors une **licence commerciale** est disponible.
 
 - **Co-detenteurs des droits** : Architect Lab, Morphaius et Bunkerity.
-- **Contact licences** : licence@morphaius.com  *(adresse a confirmer)*
+- **Contact licences** : contact@morphaius.com
 
 > Ce modele de double licence repose sur le `CLA.md` : chaque contribution est couverte
 > par le CLA, afin que les co-detenteurs puissent relicencier le code (y compris a titre

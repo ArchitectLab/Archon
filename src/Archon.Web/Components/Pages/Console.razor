@@ -1,0 +1,103 @@
+@page "/console"
+@rendermode InteractiveServer
+@inject IOrchestrator Orchestrator
+@inject PluginRegistry Registry
+@inject IAuditLog Audit
+
+<PageTitle>Archon - Console</PageTitle>
+
+<section class="al-console">
+    <div class="al-console__main">
+        <p class="al-eyebrow">// CONSOLE D'ORCHESTRATION</p>
+        <h1 class="al-display">Pilote<span class="al-cursor">_</span></h1>
+
+        <div class="al-cmd">
+            <span class="al-cmd__prompt">&gt;</span>
+            <input class="al-cmd__input" @bind="_input" @bind:event="oninput" @onkeydown="OnKey"
+                   placeholder="ex : meteo Agen" />
+            <button class="al-btn al-btn--spectrum al-btn--sm" @onclick="Send" disabled="@_busy">Envoyer</button>
+        </div>
+
+        @if (_busy)
+        {
+            <p class="al-meta">L'orchestrateur reflechit...</p>
+        }
+        else if (_message is not null)
+        {
+            <p class="al-msg @(_success ? "al-msg--ok" : "al-msg--err")">@_message</p>
+        }
+
+        @if (_ui is { Kind: "weather-card" } card)
+        {
+            <article class="al-card al-card--accent">
+                <p class="al-eyebrow">METEO</p>
+                <h3 class="al-card__title">@card.Data["city"] <span class="al-muted">@card.Data["country"]</span></h3>
+                <p class="al-stat">@card.Data["temperature"]<span class="al-unit">&#176;C</span></p>
+                <p class="al-meta">@card.Data["condition"] &middot; vent @card.Data["wind"] km/h</p>
+            </article>
+        }
+    </div>
+
+    <aside class="al-console__side">
+        <p class="al-eyebrow">// REGISTRE</p>
+        <ul class="al-registry">
+            @foreach (var r in Registry.All())
+            {
+                <li class="al-reg">
+                    <span class="al-dot @(r.Health == PluginHealth.Online ? "al-dot--on" : "al-dot--off")"></span>
+                    <span class="al-reg__name">@r.Plugin.Manifest.Name</span>
+                    <span class="al-tag">v@(r.Plugin.Manifest.Version)</span>
+                    <span class="al-reg__status">@(r.Health == PluginHealth.Online ? "online" : "offline")</span>
+                </li>
+            }
+        </ul>
+
+        <p class="al-eyebrow">// JOURNAL</p>
+        <ul class="al-audit">
+            @foreach (var e in Audit.Recent(8))
+            {
+                <li class="@(e.Allowed ? "" : "al-audit--deny")">
+                    <span class="al-mono">@e.Action</span> @e.Detail
+                </li>
+            }
+            @if (Audit.Recent(1).Count == 0)
+            {
+                <li class="al-muted">Aucune action pour l'instant.</li>
+            }
+        </ul>
+    </aside>
+</section>
+
+@code {
+    private string _input = "";
+    private bool _busy;
+    private bool _success;
+    private string? _message;
+    private UiBlock? _ui;
+
+    private async Task Send()
+    {
+        if (string.IsNullOrWhiteSpace(_input) || _busy)
+        {
+            return;
+        }
+
+        _busy = true;
+        _message = null;
+        _ui = null;
+
+        var resp = await Orchestrator.HandleAsync(_input);
+        _success = resp.Success;
+        _message = resp.Message;
+        _ui = resp.Ui;
+        _busy = false;
+    }
+
+    private async Task OnKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await Send();
+        }
+    }
+}

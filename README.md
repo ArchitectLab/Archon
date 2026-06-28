@@ -7,8 +7,8 @@ plugins (domotique, station meteo, bras robotique, cameras, serveurs) qui orches
 tout depuis des dashboards clairs, comprend le langage naturel, et reconfigure son
 interface en direct.
 
-**Statut : Phase 1, conception.** Tout reste a construire : c'est le meilleur moment
-pour contribuer.
+**Statut : Phase 1.** L'architecture est posee et un premier squelette runnable existe
+deja (voir plus bas). C'est le meilleur moment pour contribuer.
 
 ## Principes
 - **Libre et auditable** : code source public, licence libre, on garde la main de bout en bout.
@@ -17,10 +17,15 @@ pour contribuer.
 - **Modulaire** : un coeur minimal, tout le reste se branche en plugins.
 
 ## Documentation
-- **Vision** : `docs/VISION.md` (cadrage, a co-ecrire).
-- **Architecture** : `docs/ARCHITECTURE.md` (esquisse, a co-ecrire).
-- **Design system** : `docs/design-system.md` (la marque, dispo comme skill Claude Code
-  dans `.claude/skills/architect-lab-design/`).
+- **Vision** : `docs/VISION.md`. **Architecture** : `docs/ARCHITECTURE.md`.
+- **Contrat de plugin** : `docs/plugin-model.md`. **Donnees** : `docs/data-model.md`.
+- **Securite jour 1** : `docs/security-baseline.md`.
+- **Design system** : `docs/design-system.md` (skill Claude Code `architect-lab-design`).
+
+## Lancer en local (Phase 1)
+Un premier squelette tourne deja (Blazor + .NET 10) : accueil, console d'orchestration, et
+un plugin meteo reel branche de bout en bout. Pas besoin d'etre dev : suis
+`docs/dev-quickstart.md` (installer .NET 10, ouvrir le dossier dans VS Code, `dotnet run`).
 
 ## Licence
 Archon est distribue sous **AGPL-3.0-or-later** (voir `LICENSE`).

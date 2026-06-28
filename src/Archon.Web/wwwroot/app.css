@@ -1,0 +1,183 @@
+/* ============================================================
+   Archon : feuille de style de l'app (Phase 1)
+   Design system Architect Lab : spectre sur void blueprint.
+   Spectre uniquement sur des traits, jamais en aplat (<= 10 %).
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --al-green: #2ECC9A;
+  --al-blue: #2A6BF2;
+  --al-violet: #8A2BE2;
+  --al-magenta: #E612D9;
+
+  --al-void: #0B1220;
+  --al-panel: #111A2C;
+  --al-line: #1E2A40;
+  --al-line-2: #3A4A66;
+  --al-slate: #8B97A8;
+  --al-paper: #F5F7FA;
+
+  --al-spectrum: linear-gradient(90deg, #2ECC9A 0%, #2A6BF2 38%, #8A2BE2 70%, #E612D9 100%);
+
+  --al-font-display: 'Space Grotesk', system-ui, sans-serif;
+  --al-font-body: 'Inter', system-ui, sans-serif;
+  --al-font-mono: 'JetBrains Mono', ui-monospace, 'Consolas', monospace;
+
+  --al-radius-sm: 6px;
+  --al-radius-md: 12px;
+  --al-grid: 48px;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--al-void);
+  color: var(--al-paper);
+  font-family: var(--al-font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--al-blue); text-decoration: none; transition: color .12s ease; }
+a:hover { color: var(--al-violet); }
+
+/* -- Le curseur magenta (la signature) -- */
+.al-cursor {
+  color: var(--al-magenta);
+  font-weight: 700;
+  animation: al-blink 1s steps(1) infinite;
+}
+@keyframes al-blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .al-cursor { animation: none; } }
+
+/* -- Grille blueprint -- */
+.al-blueprint {
+  background-image:
+    linear-gradient(var(--al-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--al-line) 1px, transparent 1px);
+  background-size: var(--al-grid) var(--al-grid);
+  background-position: center top;
+}
+
+/* -- Shell -- */
+.al-shell { min-height: 100vh; display: flex; flex-direction: column; }
+
+.al-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--al-line);
+}
+.al-brand { display: flex; align-items: center; gap: 10px; color: var(--al-paper); }
+.al-wordmark { font-family: var(--al-font-display); font-weight: 700; letter-spacing: -0.02em; font-size: 20px; }
+.al-nav { display: flex; gap: 24px; font-family: var(--al-font-mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
+.al-nav a { color: var(--al-slate); }
+.al-nav a:hover { color: var(--al-paper); }
+
+.al-main { flex: 1; padding: 48px 32px; max-width: 1100px; width: 100%; margin: 0 auto; }
+
+.al-foot {
+  padding: 20px 32px; border-top: 1px solid var(--al-line);
+  font-family: var(--al-font-mono); font-size: 12px; letter-spacing: 0.2em;
+  color: var(--al-slate); text-align: center;
+}
+
+/* -- Typo utilitaires -- */
+.al-eyebrow {
+  font-family: var(--al-font-mono); font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.2em; color: var(--al-slate); margin: 0 0 12px;
+}
+.al-display {
+  font-family: var(--al-font-display); font-weight: 700; letter-spacing: -0.02em;
+  font-size: clamp(32px, 5vw, 52px); line-height: 1.1; margin: 0 0 20px;
+}
+.al-lead { font-size: 18px; color: var(--al-paper); max-width: 60ch; margin: 0 0 28px; }
+.al-meta { font-family: var(--al-font-mono); font-size: 13px; color: var(--al-slate); }
+.al-muted { color: var(--al-slate); }
+.al-mono { font-family: var(--al-font-mono); }
+
+/* -- Hero -- */
+.al-hero { padding: 56px 40px; border: 1px solid var(--al-line); border-radius: var(--al-radius-md); }
+.al-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+
+/* -- Filet spectre -- */
+.al-rule { height: 3px; width: 160px; background: var(--al-spectrum); border-radius: 999px; margin: 8px 0 16px; }
+
+/* -- Boutons -- */
+.al-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--al-font-body); font-weight: 600; font-size: 15px;
+  padding: 11px 20px; border-radius: var(--al-radius-sm);
+  border: 1px solid transparent; cursor: pointer; transition: transform .1s ease, border-color .12s ease, background .12s ease;
+}
+.al-btn:active { transform: translateY(1px); }
+.al-btn--sm { padding: 8px 14px; font-size: 14px; }
+.al-btn--spectrum {
+  color: var(--al-paper); background: var(--al-void);
+  border-image: var(--al-spectrum) 1; border: 1px solid var(--al-blue);
+  box-shadow: inset 0 0 0 1px rgba(42,107,242,.25);
+}
+.al-btn--spectrum:hover { box-shadow: 0 0 0 3px rgba(42,107,242,.30); }
+.al-btn--spectrum:disabled { opacity: .5; cursor: default; }
+.al-btn--secondary { color: var(--al-paper); background: transparent; border: 1px solid var(--al-line-2); }
+.al-btn--secondary:hover { border-color: var(--al-violet); color: var(--al-paper); }
+
+/* -- Console -- */
+.al-console { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+.al-console__side { border-left: 1px solid var(--al-line); padding-left: 24px; }
+
+.al-cmd {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--al-panel); border: 1px solid var(--al-line-2); border-radius: var(--al-radius-sm);
+  padding: 8px 12px; margin-bottom: 18px;
+}
+.al-cmd:focus-within { border-color: var(--al-blue); box-shadow: 0 0 0 3px rgba(42,107,242,.30); }
+.al-cmd__prompt { font-family: var(--al-font-mono); color: var(--al-green); }
+.al-cmd__input {
+  flex: 1; background: transparent; border: 0; outline: none;
+  color: var(--al-paper); font-family: var(--al-font-mono); font-size: 15px;
+}
+
+.al-msg { font-size: 14px; }
+.al-msg--ok { color: var(--al-green); }
+.al-msg--err { color: var(--al-magenta); }
+
+/* -- Carte -- */
+.al-card {
+  position: relative; background: var(--al-panel); border: 1px solid var(--al-line);
+  border-radius: var(--al-radius-md); padding: 20px 22px; margin-top: 16px; max-width: 360px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
+}
+.al-card--accent::before {
+  content: ""; position: absolute; left: 0; top: 0; right: 0; height: 3px;
+  background: var(--al-spectrum); border-radius: var(--al-radius-md) var(--al-radius-md) 0 0;
+}
+.al-card__title { font-family: var(--al-font-display); margin: 6px 0 10px; }
+.al-stat { font-family: var(--al-font-display); font-weight: 700; font-size: 44px; line-height: 1; margin: 6px 0; font-variant-numeric: tabular-nums; }
+.al-unit { font-size: 18px; color: var(--al-slate); margin-left: 4px; }
+
+/* -- Registre -- */
+.al-registry, .al-audit { list-style: none; margin: 0 0 24px; padding: 0; }
+.al-reg { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--al-line); font-size: 14px; }
+.al-reg__name { font-weight: 600; }
+.al-reg__status { margin-left: auto; font-family: var(--al-font-mono); font-size: 12px; color: var(--al-slate); }
+.al-dot { width: 8px; height: 8px; border-radius: 999px; flex: none; }
+.al-dot--on { background: var(--al-green); box-shadow: 0 0 8px rgba(46,204,154,.7); }
+.al-dot--off { background: var(--al-slate); }
+.al-tag {
+  font-family: var(--al-font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--al-slate); border: 1px solid var(--al-line-2); border-radius: 999px; padding: 1px 8px;
+}
+
+.al-audit li { font-family: var(--al-font-mono); font-size: 12px; color: var(--al-slate); padding: 4px 0; }
+.al-audit .al-mono { color: var(--al-paper); }
+.al-audit--deny .al-mono { color: var(--al-magenta); }
+
+/* -- Responsive -- */
+@media (max-width: 820px) {
+  .al-console { grid-template-columns: 1fr; }
+  .al-console__side { border-left: 0; padding-left: 0; border-top: 1px solid var(--al-line); padding-top: 20px; }
+}

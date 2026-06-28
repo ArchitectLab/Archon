@@ -13,8 +13,21 @@ comprend le langage naturel, orchestre l'ensemble, et reconfigure ses dashboards
 Souveraine (100 % local, cloud, ou hybride : l'utilisateur choisit), modulaire (coeur
 minimal + plugins), auditable, securisee des la premiere ligne.
 
-**Statut : Phase 1, conception.** La stack n'est pas figee. On co-ecrit la vision, puis
-l'architecture, avant de coder en grand.
+**Statut : Phase 1, conception.** Vision et architecture v0 actees (voir plus bas et
+`docs/`). On affine les details, puis on code.
+
+## Stack & architecture (decide)
+Choix actes en Phase 1 (detail dans `docs/ARCHITECTURE.md`) :
+- **Polyglotte par conception** autour d'un coeur **Blazor + .NET 10 (C#)**. Rien ne
+  depend d'une seule stack : chaque sous-projet (plugin, MCP, connecteur, agent) choisit
+  la sienne derriere des contrats stables (MCP ; WASM Component Model/WIT ; gRPC ; HTTP).
+- **Securite a la frontiere de confiance** : le code non fiable tourne en bac a sable
+  **WASM/WASI**. Baseline du jour 1 dans `docs/security-baseline.md`.
+- **Deploiement** : 3 modes a l'onboarding (local / cloud / hybride). En hybride, routage
+  par capacite (compute, latence, sensibilite des donnees, dependances).
+- **Modeles IA** agnostiques, local plus cloud routes (Ollama/vLLM ou cloud).
+- **Ajout pre-mache par defaut plus mode avance** (modeles, plugins, MCP, connecteurs).
+- Transport temps reel non fige (abstraction : WebSocket / SSE / SignalR / autre).
 
 ## Qui
 Projet d'**Architect Lab** (association loi 1901, Agen), co-detenu avec **Morphaius** (IA)
@@ -35,7 +48,8 @@ et **Bunkerity** (cybersecurite, editeurs du WAF open source BunkerWeb).
 
 ## Ou trouver quoi
 - `README.md` : presentation publique.
-- `docs/VISION.md` : le cap (a co-ecrire). `docs/ARCHITECTURE.md` : l'esquisse technique.
+- `docs/VISION.md` : le cap. `docs/ARCHITECTURE.md` : l'architecture v0.
+- `docs/security-baseline.md` : la baseline securite du jour 1.
 - `docs/design-system.md` : pointeur vers la DA.
 - `.claude/skills/architect-lab-design/` : le **skill design** (invocable `/architect-lab-design`).
   Guidance dans `SKILL.md`, `archon.md` (produit), `voice.md` (texte), `tokens.css` ;
@@ -50,8 +64,9 @@ et **Bunkerity** (cybersecurite, editeurs du WAF open source BunkerWeb).
 - **CLA** obligatoire avant fusion. Relecture mainteneur + oeil securite Bunkerity sur le sensible.
 
 ## A trancher ensemble (ne pas figer seul)
-- Stack technique d'Archon (le site tourne en Blazor/.NET ; a confirmer pour l'app).
-- Frontiere coeur minimal vs plugins ; modele de plugin (isolation, permissions).
-- Frontiere local / hybride / cloud et modele de donnees.
+- Modele de donnees detaille.
+- Frontiere exacte coeur minimal vs plugins ; format precis du manifeste et de l'ABI.
+- Transport temps reel (derriere une abstraction).
+- Stack de la surface generative (Blazor vs TS).
 
 Principe directeur : **la confiance ne se decrete pas, elle se verifie.**

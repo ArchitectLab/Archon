@@ -38,6 +38,37 @@ public class KeywordIntentResolverTests
     {
         Assert.Null(await new KeywordIntentResolver().ResolveAsync("bonjour", NoSpecs));
     }
+
+    [Fact]
+    public async Task Recognizes_ihm_meteo_placement()
+    {
+        var intent = await new KeywordIntentResolver().ResolveAsync(
+            "mets sur l'ihm la meteo d'Agen rafraichie toutes les 2 minutes", NoSpecs);
+        Assert.NotNull(intent);
+        Assert.Equal("ihm.place", intent!.CapabilityId);
+        Assert.Equal("meteo.get", intent.Args["capability"]);
+        Assert.Equal("120", intent.Args["refresh_sec"]);
+        Assert.Contains("Agen", intent.Args["title"]);
+    }
+
+    [Fact]
+    public async Task Extracts_city_and_seconds_for_ihm()
+    {
+        var intent = await new KeywordIntentResolver().ResolveAsync(
+            "affiche la meteo de Paris sur le canvas toutes les 30 secondes", NoSpecs);
+        Assert.NotNull(intent);
+        Assert.Equal("ihm.place", intent!.CapabilityId);
+        Assert.Equal("30", intent.Args["refresh_sec"]);
+        Assert.Contains("Paris", intent.Args["title"]);
+    }
+
+    [Fact]
+    public async Task Recognizes_ihm_clear()
+    {
+        var intent = await new KeywordIntentResolver().ResolveAsync("vide l'ihm", NoSpecs);
+        Assert.NotNull(intent);
+        Assert.Equal("ihm.clear", intent!.CapabilityId);
+    }
 }
 
 public class LlmIntentResolverTests

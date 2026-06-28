@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Archon.Core.Ai;
 using Archon.Core.Data;
 
@@ -27,6 +29,32 @@ public sealed class KeywordIntentResolver : IIntentResolver
     public Task<Intent?> ResolveAsync(string input, IReadOnlyList<CapabilitySpec> available, CancellationToken ct = default)
     {
         input = input.Trim();
+        var norm = Deburr(input).ToLowerInvariant();
+
+        // IHM : poser la meteo sur le canvas (sans IA aussi). C'est l'exemple meteo-2min :
+        // "mets sur l'ihm la meteo d'Agen rafraichie toutes les 2 minutes".
+        if (norm.Contains("ihm") || norm.Contains("canvas"))
+        {
+            if (norm.Contains("vide") || norm.Contains("efface") || norm.Contains("nettoie"))
+            {
+                return Task.FromResult<Intent?>(new Intent("ihm.clear", new Dictionary<string, string>()));
+            }
+
+            if (norm.Contains("meteo"))
+            {
+                var ville = ExtractCity(input);
+                var refresh = ExtractRefreshSec(norm);
+                var intent = new Intent("ihm.place", new Dictionary<string, string>
+                {
+                    ["title"] = $"Meteo {ville}",
+                    ["capability"] = "meteo.get",
+                    ["args"] = $"{{\"city\":\"{ville}\"}}",
+                    ["refresh_sec"] = refresh.ToString(CultureInfo.InvariantCulture),
+                });
+                return Task.FromResult<Intent?>(intent);
+            }
+        }
+
         if (input.StartsWith("meteo", StringComparison.OrdinalIgnoreCase))
         {
             var city = input.Length > 5 ? input[5..].Trim() : "";
@@ -53,6 +81,57 @@ public sealed class KeywordIntentResolver : IIntentResolver
         }
 
         return Task.FromResult<Intent?>(null);
+    }
+
+    // Extrait la ville d'une phrase ("meteo de Paris", "meteo d'Agen"). Defaut : Agen.
+    private static string ExtractCity(string input)
+    {
+        var m = Regex.Match(
+            Deburr(input),
+            @"meteo\s+(?:de\s+|d'|du\s+|a\s+)?([A-Za-z][A-Za-z\-]+)",
+            RegexOptions.IgnoreCase);
+        if (m.Success)
+        {
+            var city = m.Groups[1].Value.Trim();
+            string[] stop = ["rafraichie", "rafraichi", "toutes", "tous", "sur", "la", "le", "les", "des", "qui", "avec", "en", "ville"];
+            if (city.Length > 1 && Array.IndexOf(stop, city.ToLowerInvariant()) < 0)
+            {
+                return char.ToUpperInvariant(city[0]) + city[1..].ToLowerInvariant();
+            }
+        }
+
+        return "Agen";
+    }
+
+    // Extrait un intervalle de rafraichissement ("toutes les 2 minutes"). Defaut : 120 s.
+    private static int ExtractRefreshSec(string norm)
+    {
+        var m = Regex.Match(norm, @"(\d+)\s*(minute|min|seconde|sec|heure|h|s)");
+        if (m.Success && int.TryParse(m.Groups[1].Value, out var n) && n > 0)
+        {
+            var unit = m.Groups[2].Value;
+            if (unit.StartsWith("min")) return n * 60;
+            if (unit == "h" || unit.StartsWith("heure")) return n * 3600;
+            return n;
+        }
+
+        return 120;
+    }
+
+    // Retire les accents (pour reconnaitre "meteo" comme "meteo") sans toucher au style ASCII.
+    private static string Deburr(string s)
+    {
+        var formD = s.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder(formD.Length);
+        foreach (var c in formD)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            {
+                sb.Append(c);
+            }
+        }
+
+        return sb.ToString().Normalize(NormalizationForm.FormC);
     }
 }
 

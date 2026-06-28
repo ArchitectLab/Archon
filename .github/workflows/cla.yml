@@ -1,0 +1,44 @@
+# CLA Assistant — demande et enregistre l'acceptation du CLA (CLA.md) sur chaque PR.
+# Modele de double licence : sans CLA accepte, une PR ne peut pas etre fusionnee.
+#
+# Pre-requis cote depot (a configurer avant d'activer) :
+#   - Un secret PERSONAL_ACCESS_TOKEN (PAT classique, scope `repo`) qui sert a ecrire
+#     le fichier des signatures. GITHUB_TOKEN suffit si les signatures sont stockees
+#     dans ce meme depot.
+#   - Un depot/branche/chemin ou stocker les signatures (ici : meme depot, branche
+#     `cla-signatures`, fichier `signatures/version1/cla.json`). A creer au besoin.
+#
+# Doc : https://github.com/contributor-assistant/github-action
+
+name: CLA Assistant
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened, closed, synchronize]
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+  statuses: write
+
+jobs:
+  cla:
+    runs-on: ubuntu-latest
+    steps:
+      - name: CLA Assistant
+        if: (github.event.comment.body == 'recree' || github.event.comment.body == 'J''ai lu le CLA et je l''accepte') || github.event_name == 'pull_request_target'
+        uses: contributor-assistant/github-action@v2.6.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        with:
+          path-to-signatures: 'signatures/version1/cla.json'
+          path-to-document: 'https://github.com/architectlab/archon/blob/main/CLA.md'
+          branch: 'cla-signatures'
+          allowlist: 'dependabot[bot],bot*'
+          custom-pr-sign-comment: "J'ai lu le CLA et je l'accepte"
+          custom-notsigned-prcomment: "Merci pour ta contribution. Avant de pouvoir fusionner, merci de lire le [CLA](CLA.md) puis de commenter, ci-dessous, exactement : **J'ai lu le CLA et je l'accepte**"
+          custom-allsigned-prcomment: "Le CLA est accepte. Merci."

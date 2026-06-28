@@ -1,0 +1,193 @@
+/* ============================================================
+   ARCHITECT LAB — Interactions
+   Animated button treatments + form controls (Switch, Checkbox,
+   Radio, Segmented control, IconButton). Shipped globally so they
+   work in plain HTML on the site AND back the React components.
+
+   The animated treatments are opt-in modifiers on top of any button:
+     <button class="al-btn al-btn--secondary al-fx--sweep">…</button>
+   Keep the spectrum to a sliver — these are accents, not every button.
+   ============================================================ */
+
+/* ---------- Button system (plain-HTML usable) ---------- */
+.al-btn {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--al-font-display); font-weight: 600; font-size: 15px;
+  line-height: 1; letter-spacing: -0.01em;
+  padding: 11px 20px; border: 1px solid transparent;
+  border-radius: var(--al-radius-sm); cursor: pointer; text-decoration: none;
+  white-space: nowrap; user-select: none; color: var(--al-paper); background: transparent;
+  transition: background .15s ease, border-color .15s ease, color .15s ease,
+              transform .06s ease, box-shadow .25s ease;
+}
+.al-btn:active { transform: translateY(1px); }
+.al-btn[disabled], .al-btn.is-disabled { opacity: .45; cursor: not-allowed; }
+.al-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(42,107,242,.45); }
+
+.al-btn--primary   { background: var(--al-blue); border-color: var(--al-blue); color: #F5F7FA; }
+.al-btn--primary:hover   { background: #3C7BFF; }
+.al-btn--spectrum  { background: var(--al-spectrum); color: #fff; border-color: transparent; }
+.al-btn--secondary { border-color: var(--al-line-2); }
+.al-btn--secondary:hover { border-color: var(--al-blue); }
+.al-btn--ghost     { color: var(--al-slate); }
+.al-btn--ghost:hover { color: var(--al-paper); }
+.al-btn--sm { padding: 8px 14px; font-size: 13px; gap: 6px; }
+.al-btn--lg { padding: 15px 28px; font-size: 17px; gap: 10px; }
+
+/* ---------- FX (opt-in animated treatments) ---------- */
+/* sweep — a spectrum-tinted gloss sweeps across on hover */
+.al-fx--sweep::before {
+  content: ""; position: absolute; inset: -2px; pointer-events: none;
+  background: linear-gradient(110deg, transparent 38%, rgba(255,255,255,.22) 47%,
+              rgba(230,18,217,.4) 50%, rgba(138,43,226,.28) 53%, transparent 62%);
+  transform: translateX(-110%); transition: transform .65s cubic-bezier(.4,0,.2,1);
+}
+.al-fx--sweep:hover::before { transform: translateX(110%); }
+
+/* glow — spectrum bloom on hover */
+.al-fx--glow:hover {
+  box-shadow: 0 0 0 1px rgba(42,107,242,.5), 0 8px 28px rgba(138,43,226,.45);
+}
+
+/* scanline — a spectrum line crosses top→bottom (the materialisation motif) */
+.al-fx--scanline::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; opacity: 0;
+  background: var(--al-spectrum); box-shadow: 0 0 12px 2px rgba(138,43,226,.6);
+  pointer-events: none;
+}
+.al-fx--scanline:hover::after { animation: al-btn-scan .7s ease forwards; }
+@keyframes al-btn-scan {
+  0% { top: 0; opacity: 0; } 12% { opacity: 1; }
+  88% { opacity: 1; } 100% { top: 100%; opacity: 0; }
+}
+
+/* draw — architect cartouche brackets snap to the corners on hover */
+.al-fx--draw::before, .al-fx--draw::after {
+  content: ""; position: absolute; width: 11px; height: 11px;
+  border: 2px solid var(--al-blue); opacity: 0; pointer-events: none;
+  transition: opacity .2s ease, transform .25s cubic-bezier(.4,0,.2,1);
+}
+.al-fx--draw::before { top: 5px; left: 5px; border-right: 0; border-bottom: 0; transform: translate(5px,5px); }
+.al-fx--draw::after  { bottom: 5px; right: 5px; border-left: 0; border-top: 0; transform: translate(-5px,-5px); }
+.al-fx--draw:hover::before, .al-fx--draw:hover::after { opacity: .9; transform: translate(0,0); }
+
+/* ============================================================
+   SWITCH
+   ============================================================ */
+.al-switch {
+  display: inline-flex; align-items: center; gap: 11px; cursor: pointer;
+  font-family: var(--al-font-body); font-size: 14px; color: var(--al-paper);
+  border: 0; background: transparent; padding: 0; user-select: none;
+}
+.al-switch__track {
+  position: relative; flex: none; width: 46px; height: 26px; border-radius: 999px;
+  background: var(--al-void); border: 1px solid var(--al-line-2);
+  transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.al-switch__thumb {
+  position: absolute; top: 50%; left: 3px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--al-slate); transform: translateY(-50%);
+  transition: transform .28s cubic-bezier(.4,0,.2,1), background .25s ease;
+}
+.al-switch.is-on .al-switch__track {
+  background: var(--al-spectrum); border-color: transparent;
+  box-shadow: 0 0 16px rgba(138,43,226,.4);
+}
+.al-switch.is-on .al-switch__thumb { transform: translate(20px,-50%); background: #fff; }
+.al-switch.is-disabled { opacity: .45; cursor: not-allowed; }
+.al-switch:focus-visible { outline: none; }
+.al-switch:focus-visible .al-switch__track { box-shadow: 0 0 0 3px rgba(42,107,242,.45); }
+
+/* ============================================================
+   CHECKBOX (check mark draws in)
+   ============================================================ */
+.al-check, .al-radio {
+  display: inline-flex; align-items: center; gap: 11px; cursor: pointer;
+  font-family: var(--al-font-body); font-size: 14px; color: var(--al-paper);
+  border: 0; background: transparent; padding: 0; user-select: none;
+}
+.al-check__box {
+  position: relative; flex: none; width: 20px; height: 20px; border-radius: 5px;
+  border: 1px solid var(--al-line-2); background: var(--al-void);
+  display: grid; place-items: center;
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.al-check__box svg {
+  width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2.6;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 20; stroke-dashoffset: 20;
+  transition: stroke-dashoffset .3s ease .02s;
+}
+.al-check.is-on .al-check__box { background: var(--al-blue); border-color: var(--al-blue); }
+.al-check.is-on .al-check__box svg { stroke-dashoffset: 0; }
+.al-check.is-disabled, .al-radio.is-disabled { opacity: .45; cursor: not-allowed; }
+.al-check:focus-visible .al-check__box,
+.al-radio:focus-visible .al-radio__dot { outline: none; box-shadow: 0 0 0 3px rgba(42,107,242,.45); }
+
+/* ============================================================
+   RADIO (spectrum dot scales in)
+   ============================================================ */
+.al-radio__dot {
+  position: relative; flex: none; width: 20px; height: 20px; border-radius: 50%;
+  border: 1px solid var(--al-line-2); background: var(--al-void);
+  display: grid; place-items: center; transition: border-color .2s ease, box-shadow .2s ease;
+}
+.al-radio__dot::after {
+  content: ""; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--al-spectrum); transform: scale(0);
+  transition: transform .24s cubic-bezier(.34,1.4,.5,1);
+}
+.al-radio.is-on .al-radio__dot { border-color: var(--al-blue); }
+.al-radio.is-on .al-radio__dot::after { transform: scale(1); }
+
+/* ============================================================
+   SEGMENTED CONTROL (sliding indicator)
+   ============================================================ */
+.al-seg {
+  position: relative; display: inline-flex; padding: 4px; gap: 2px;
+  background: var(--al-void); border: 1px solid var(--al-line); border-radius: 9px;
+}
+.al-seg__ind {
+  position: absolute; top: 4px; bottom: 4px; left: 0; border-radius: 6px;
+  background: var(--al-panel); border: 1px solid var(--al-line-2);
+  transition: transform .28s cubic-bezier(.4,0,.2,1), width .28s cubic-bezier(.4,0,.2,1);
+  z-index: 0; pointer-events: none;
+}
+.al-seg--spectrum .al-seg__ind { background: rgba(42,107,242,.16); border-color: rgba(42,107,242,.55); }
+.al-seg__opt {
+  position: relative; z-index: 1; border: 0; background: transparent; cursor: pointer;
+  font-family: var(--al-font-mono); font-size: 12px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--al-slate); padding: 8px 15px; border-radius: 6px;
+  white-space: nowrap; transition: color .2s ease;
+}
+.al-seg__opt:hover { color: var(--al-paper); }
+.al-seg__opt.is-active { color: var(--al-paper); }
+.al-seg__opt:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(42,107,242,.45); }
+
+/* ============================================================
+   ICON BUTTON
+   ============================================================ */
+.al-iconbtn {
+  display: inline-grid; place-items: center; width: 38px; height: 38px;
+  border-radius: 6px; border: 1px solid var(--al-line-2); background: transparent;
+  color: var(--al-slate); cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .06s ease;
+}
+.al-iconbtn:hover { background: var(--al-panel); color: var(--al-paper); border-color: var(--al-blue); }
+.al-iconbtn:active { transform: translateY(1px); }
+.al-iconbtn--ghost { border-color: transparent; }
+.al-iconbtn--sm { width: 32px; height: 32px; border-radius: 5px; }
+.al-iconbtn--lg { width: 46px; height: 46px; border-radius: 8px; }
+.al-iconbtn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(42,107,242,.45); }
+
+/* ============================================================
+   REDUCED MOTION — collapse the animated treatments
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .al-fx--sweep::before { display: none; }
+  .al-fx--scanline:hover::after { animation: none; }
+  .al-switch__thumb, .al-switch__track,
+  .al-check__box svg, .al-radio__dot::after,
+  .al-seg__ind { transition: none !important; }
+}

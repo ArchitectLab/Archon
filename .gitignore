@@ -1,0 +1,55 @@
+# —— Archon — ignore rules ——
+# La stack n'est pas encore figée : ce fichier couvre les cas courants
+# (OS, éditeurs, .NET, Node, Python). On l'affinera quand la stack sera choisie.
+
+# —— OS ——
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# —— Éditeurs / IDE ——
+.vs/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# —— Claude Code ——
+# On versionne les skills (.claude/skills/), mais pas les réglages locaux.
+.claude/settings.local.json
+.claude/*.local.json
+
+# —— Secrets / environnement ——
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# —— .NET ——
+bin/
+obj/
+*.user
+
+# —— Node ——
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+
+# —— Python ——
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+
+# —— Logs / divers ——
+*.log
+coverage/

@@ -1,0 +1,55 @@
+<!-- @dsCard group="Components" name="Card" subtitle="Panels raised off the void — optional spectrum accent & blueprint" viewport="1040x640" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architect Lab — Card</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; padding: 56px; }
+  .stage { max-width: 940px; margin: 0 auto; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-top: 22px; }
+  h4 { font-family: var(--al-font-display); margin: 0 0 8px; font-size: 17px; }
+  p.sm { font-size: 13.5px; color: var(--al-slate); margin: 0; line-height: 1.6; }
+</style>
+</head>
+<body class="al-blueprint">
+  <div class="stage">
+    <span class="al-tag al-tag--spectrum">// components</span>
+    <h1 style="margin:14px 0 6px;font-size:36px">Card</h1>
+    <p style="color:var(--al-slate);max-width:580px;margin:0">A panel raised off the void. Add a spectrum hairline as the construction-line motif, or print the 48px grid inside.</p>
+    <div class="grid" id="root"></div>
+  </div>
+
+  <script type="text/babel">
+    const { Card, Tag } = window.ArchitectLabDesignSystem_61bf68;
+    function Demo() {
+      return (
+        <>
+          <Card>
+            <Tag tone="green">Plain</Tag>
+            <h4 style={{marginTop:14}}>Surface panel</h4>
+            <p className="sm">The default — Panel on the void, hairline border, 12px radius.</p>
+          </Card>
+          <Card accent={true}>
+            <Tag tone="spectrum">Accent</Tag>
+            <h4 style={{marginTop:14}}>Spectrum top rule</h4>
+            <p className="sm">A 3px spectrum hairline along the top edge — the hero card.</p>
+          </Card>
+          <Card blueprint={true}>
+            <Tag tone="blue">Blueprint</Tag>
+            <h4 style={{marginTop:14}}>Grid inside</h4>
+            <p className="sm">Drops onto Deep Void and prints the construction grid.</p>
+          </Card>
+        </>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+  </script>
+</body>
+</html>

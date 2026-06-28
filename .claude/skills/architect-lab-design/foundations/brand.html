@@ -1,0 +1,83 @@
+<!-- @dsCard group="Foundations" name="Brand & Logo" subtitle="The Morphaius spectrum bowtie on the architect's grid" viewport="1280x820" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architect Lab — Brand</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; padding: 56px; min-height: 100vh; }
+  .stage { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+  .lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .stage-box { border: 1px solid var(--al-line); border-radius: var(--al-radius-md); display: flex; align-items: center; justify-content: center; padding: 48px; min-height: 150px; }
+  .on-light { background: var(--al-paper); }
+  .grid-box { background-color: var(--al-void); background-image: linear-gradient(#1E2A40 1px, transparent 1px), linear-gradient(90deg,#1E2A40 1px,transparent 1px); background-size: 48px 48px; }
+  .meta { font-family: var(--al-font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--al-slate); margin-bottom: 10px; }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .rule-card { background: var(--al-panel); border: 1px solid var(--al-line); border-radius: var(--al-radius-md); padding: 22px; }
+  .rule-card p { margin: 8px 0 0; font-size: 13.5px; color: var(--al-slate); line-height: 1.6; }
+  .rule-card.do { border-left: 3px solid var(--al-green); }
+  .rule-card.dont { border-left: 3px solid var(--al-magenta); }
+  .rule-card.do b { color: var(--al-green); }
+  .rule-card.dont b { color: var(--al-magenta); }
+  .rule-card b { font-family: var(--al-font-display); }
+</style>
+</head>
+<body class="al-blueprint">
+  <div class="stage">
+    <div>
+      <span class="al-tag al-tag--spectrum">// the mark</span>
+      <h1 style="margin:14px 0 8px;font-size:44px">Architect Lab<span style="color:var(--al-magenta)">_</span></h1>
+      <p style="color:var(--al-slate);max-width:620px;margin:0">The bowtie is inherited from Morphaius: a spectrum stroke crossing through itself — the idea passing through every colour before it becomes real. It sits on the architect's grid and never tilts.</p>
+      <hr class="al-rule" style="max-width:380px;margin-top:24px">
+    </div>
+
+    <div class="lockups">
+      <div>
+        <div class="meta">Primary — on void</div>
+        <div class="stage-box grid-box" id="lk-dark"></div>
+      </div>
+      <div>
+        <div class="meta">Inverse — on paper</div>
+        <div class="stage-box on-light" id="lk-light"></div>
+      </div>
+    </div>
+
+    <div class="lockups">
+      <div>
+        <div class="meta">Mark only</div>
+        <div class="stage-box grid-box" id="lk-mark"></div>
+      </div>
+      <div>
+        <div class="meta">Stacked</div>
+        <div class="stage-box grid-box" id="lk-stack"></div>
+      </div>
+    </div>
+
+    <div class="rules">
+      <div class="rule-card do">
+        <b>Do</b>
+        <p>Keep the spectrum running bottom-left&nbsp;→&nbsp;top-right, green to magenta. Give the mark clear space equal to half its height. Minimum size 24&nbsp;px — favicon uses the mark alone.</p>
+      </div>
+      <div class="rule-card dont">
+        <b>Don't</b>
+        <p>Don't tilt, stretch or reverse the spectrum. In single-colour contexts use the mono lockup (white on dark, Deep Void on light) — never one isolated spectrum colour on the mark.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/babel">
+    const { Logo } = window.ArchitectLabDesignSystem_61bf68;
+    const mount = (id, el) => ReactDOM.createRoot(document.getElementById(id)).render(el);
+    mount('lk-dark',  <Logo variant="horizontal" tone="spectrum" size={46} />);
+    mount('lk-light', <Logo variant="horizontal" tone="mono-dark" size={46} />);
+    mount('lk-mark',  <Logo variant="mark" size={64} />);
+    mount('lk-stack', <Logo variant="stacked" size={40} />);
+  </script>
+</body>
+</html>

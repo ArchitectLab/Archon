@@ -1,0 +1,52 @@
+<!-- @dsCard group="Foundations" name="Colour" subtitle="The Morphaius spectrum on a deep architectural void" viewport="1280x880" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architect Lab — Colour</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 56px; }
+  .stage { max-width: 1120px; margin: 0 auto; }
+  .spectrum-bar { height: 64px; border-radius: 12px; background: var(--al-spectrum); display: flex; align-items: center; justify-content: center; margin: 22px 0 14px; }
+  .spectrum-bar code { color: #fff; font-family: var(--al-font-mono); font-size: 12.5px; font-weight: 700; letter-spacing: .04em; }
+  .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .swatch { border-radius: 12px; overflow: hidden; border: 1px solid var(--al-line); }
+  .swatch .chip { height: 96px; display: flex; align-items: flex-end; padding: 12px; }
+  .swatch .info { background: var(--al-panel); padding: 14px 16px; }
+  .swatch .info b { font-family: var(--al-font-display); display: block; font-size: 15px; }
+  .swatch .info .hex { font-family: var(--al-font-mono); font-size: 12px; color: var(--al-slate); margin-top: 2px; display: block; }
+  .swatch .info .use { font-size: 12.5px; color: var(--al-slate); margin-top: 6px; display: block; }
+  .label { font-family: var(--al-font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--al-slate); margin: 36px 0 14px; }
+  .note { margin-top: 28px; font-size: 13.5px; color: var(--al-slate); border-left: 3px solid var(--al-line); padding-left: 16px; max-width: 760px; line-height: 1.65; }
+  .note b { color: var(--al-paper); }
+</style>
+</head>
+<body class="al-blueprint">
+  <div class="stage">
+    <span class="al-tag al-tag--spectrum">// 03 — la palette</span>
+    <h1 style="margin:14px 0 6px;font-size:40px">The spectrum &amp; the void</h1>
+    <p style="color:var(--al-slate);max-width:680px;margin:0">Four signal colours that only ever live in a gradient — on strokes, bars, rules and the logo, never as a massive flat fill. The grounds stay neutral and dark; the contrast between the quiet grid and the vibrating spectrum is the identity.</p>
+
+    <div class="spectrum-bar"><code>LE SPECTRE — linear-gradient(90deg, #2ECC9A → #2A6BF2 → #8A2BE2 → #E612D9)</code></div>
+
+    <div class="row">
+      <div class="swatch"><div class="chip" style="background:#2ECC9A"></div><div class="info"><b>Spectre Green</b><span class="hex">#2ECC9A</span><span class="use">Start · success</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#2A6BF2"></div><div class="info"><b>Spectre Blue</b><span class="hex">#2A6BF2</span><span class="use">Links · primary buttons</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#8A2BE2"></div><div class="info"><b>Spectre Violet</b><span class="hex">#8A2BE2</span><span class="use">Hover · second accent</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#E612D9"></div><div class="info"><b>Spectre Magenta</b><span class="hex">#E612D9</span><span class="use">The spark · the cursor</span></div></div>
+    </div>
+
+    <div class="label">Neutrals — the blueprint</div>
+    <div class="row">
+      <div class="swatch"><div class="chip" style="background:#0B1220"><span style="font-family:var(--al-font-mono);font-size:11px;color:#8B97A8">AAA contrast</span></div><div class="info"><b>Deep Void</b><span class="hex">#0B1220</span><span class="use">Primary dark ground</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#111A2C"></div><div class="info"><b>Panel</b><span class="hex">#111A2C</span><span class="use">Raised surfaces</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#1E2A40"></div><div class="info"><b>Grid Line</b><span class="hex">#1E2A40</span><span class="use">Grid · borders</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#F5F7FA"><span style="font-family:var(--al-font-mono);font-size:11px;color:#0B1220">text on dark</span></div><div class="info"><b>Paper</b><span class="hex">#F5F7FA</span><span class="use">Text · light ground</span></div></div>
+    </div>
+
+    <p class="note"><b>Rule of gold:</b> the spectrum stays under ~10% of any composition. For documents printed on light grounds, darken the spectrum ends (green&nbsp;<code style="color:#1FA87C">#1FA87C</code>, magenta&nbsp;<code style="color:#D012C8">#D012C8</code>) to hold contrast.</p>
+  </div>
+</body>
+</html>

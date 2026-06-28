@@ -1,0 +1,44 @@
+<!-- @dsCard group="Components" name="Logo" subtitle="The spectrum bowtie — mark, horizontal & stacked lockups" viewport="1040x640" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architect Lab — Logo</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; padding: 56px; }
+  .stage { max-width: 940px; margin: 0 auto; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
+  .box { border: 1px solid var(--al-line); border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 44px; min-height: 130px; }
+  .light { background: var(--al-paper); }
+  .meta { font-family: var(--al-font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--al-slate); margin-bottom: 10px; }
+</style>
+</head>
+<body class="al-blueprint">
+  <div class="stage">
+    <span class="al-tag al-tag--spectrum">// components</span>
+    <h1 style="margin:14px 0 6px;font-size:36px">Logo</h1>
+    <p style="color:var(--al-slate);max-width:560px;margin:0">The Morphaius spectrum bowtie. Three lockups, three tones. It never tilts and the spectrum never reverses.</p>
+    <div class="grid">
+      <div><div class="meta">Horizontal · spectrum</div><div class="box" id="a"></div></div>
+      <div><div class="meta">Horizontal · mono on paper</div><div class="box light" id="b"></div></div>
+      <div><div class="meta">Stacked</div><div class="box" id="c"></div></div>
+      <div><div class="meta">Mark · scales to favicon</div><div class="box" id="d"></div></div>
+    </div>
+  </div>
+
+  <script type="text/babel">
+    const { Logo } = window.ArchitectLabDesignSystem_61bf68;
+    const m = (id, el) => ReactDOM.createRoot(document.getElementById(id)).render(el);
+    m('a', <Logo variant="horizontal" tone="spectrum" size={44} />);
+    m('b', <Logo variant="horizontal" tone="mono-dark" size={44} />);
+    m('c', <Logo variant="stacked" size={40} />);
+    m('d', <div style={{display:'flex',alignItems:'center',gap:28}}><Logo variant="mark" size={72}/><Logo variant="mark" size={40}/><Logo variant="mark" size={22}/></div>);
+  </script>
+</body>
+</html>

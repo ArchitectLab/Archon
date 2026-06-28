@@ -1,0 +1,141 @@
+/* ============================================================
+   ARCHITECT LAB — Motion engine · al-scroll.css
+   The signature scroll system: "La Matérialisation".
+   Content arrives as a blueprint wireframe, a spectrum scan-line
+   sweeps through it, and it materialises into the finished design.
+
+   ROBUSTNESS MODEL — the visible, finished state is the DEFAULT.
+   Hidden "start" states apply ONLY when motion is allowed AND the
+   engine has armed the page (html.al-ready, set before first paint).
+   So print, PDF, reduced-motion and any frozen-transition capture
+   always show the real content — never a blank opacity:0.
+
+   Drop-in usage — add data attributes, then load al-scroll.js:
+     data-al="rise|wipe|materialize|draw|build"
+     data-al-stagger="90"   (parent: children reveal in sequence)
+     data-al-parallax="0.18"(scrubbed depth on scroll)
+     data-al-count="1440"   (number counts up on enter)
+     data-al-type           (text types out with the cursor on enter)
+     data-al-repeat         (replay every time it re-enters)
+
+   Personality (on <html data-al-motion="…">):
+     materialize (default) · scan · draft · calm
+   Amplitude: --al-amp (0.5 … 1.5) scales distance + duration.
+   Charge:    --al-charge (0 … 1) dials the spectrum's vividness —
+              low = restrained (faint rail, soft scan, gentle colour
+              arrival); high = the spectrum sings (vivid rail + bead,
+              strong scan glow, dramatic materialisation).
+   ============================================================ */
+
+:root { --al-amp: .5; --al-charge: .65; }  /* amp = calm default; charge = Plan↔Spectre balance */
+
+/* ---------- Scroll progress rail (left edge) ---------- */
+.al-rail {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 3px;
+  background: rgba(30, 42, 64, 0.6); z-index: 60; pointer-events: none;
+}
+.al-rail__fill {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #2ECC9A, #2A6BF2 38%, #8A2BE2 70%, #E612D9);
+  transform-origin: top; transform: scaleY(var(--al-progress, 0));
+  transition: transform .08s linear; opacity: calc(.4 + .6 * var(--al-charge));
+}
+.al-rail__bead {
+  position: absolute; left: 50%; top: calc(var(--al-progress, 0) * 100%);
+  width: 9px; height: 9px; border-radius: 50%; transform: translate(-50%, -50%);
+  background: #E612D9; box-shadow: 0 0 14px 2px rgba(230, 18, 217, .6);
+  opacity: calc(.35 + .65 * var(--al-charge));
+}
+
+/* ============================================================
+   TRANSITIONS — defined on the base; harmless when nothing hides.
+   The base value of every property is the FINAL (visible) state.
+   ============================================================ */
+[data-al] { --d: var(--al-delay, 0ms); }
+
+[data-al="rise"] { transition: opacity .7s cubic-bezier(.2,.7,.2,1) var(--d), transform .7s cubic-bezier(.2,.7,.2,1) var(--d); }
+[data-al="wipe"] { transition: clip-path .85s cubic-bezier(.2,.7,.2,1) var(--d); }
+[data-al="draw"] { stroke-dasharray: var(--len, 1200); transition: stroke-dashoffset 1.25s cubic-bezier(.4,0,.2,1) var(--d); }
+[data-al="materialize"] { position: relative; transition: opacity .85s ease var(--d), filter .85s ease var(--d); }
+
+/* materialize decorations — invisible in the finished state */
+[data-al="materialize"]::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit;
+  border: 1px dashed #3A4A66; opacity: 0; pointer-events: none;
+  transition: opacity .6s ease calc(var(--d) + .15s);
+}
+[data-al="materialize"]::after {
+  content: ""; position: absolute; left: -1px; right: -1px; top: 0; height: 2px;
+  background: linear-gradient(90deg, #2ECC9A, #2A6BF2 38%, #8A2BE2 70%, #E612D9);
+  box-shadow: 0 0 16px 3px rgba(138, 43, 226, calc(.18 + .55 * var(--al-charge)));
+  opacity: 0; pointer-events: none; z-index: 3;
+}
+
+/* build — finished state shows the real content; the wireframe skeleton
+   is an OPAQUE overlay that fades out (so a frozen capture shows the
+   wireframe, never a blank). */
+[data-al="build"] { position: relative; }
+[data-al="build"] .al-real { opacity: 1; }
+[data-al="build"] .al-skeleton { position: absolute; inset: 30px; z-index: 2; background: #111A2C; opacity: 0; display: flex; flex-direction: column; gap: 14px; justify-content: center; transition: opacity .6s ease var(--d); }
+.al-skeleton-bar { height: 12px; border-radius: 3px; border: 1px dashed #3A4A66; background: rgba(58, 74, 102, .12); }
+
+/* cartouche brackets — present in the finished state */
+.al-cartouche { position: relative; }
+.al-bracket { position: absolute; width: 16px; height: 16px; border-color: #2A6BF2; border-style: solid; border-width: 0; opacity: .8; transition: opacity .5s ease var(--d); }
+.al-bracket.tl { top: -7px; left: -7px; border-top-width: 2px; border-left-width: 2px; }
+.al-bracket.tr { top: -7px; right: -7px; border-top-width: 2px; border-right-width: 2px; }
+.al-bracket.bl { bottom: -7px; left: -7px; border-bottom-width: 2px; border-left-width: 2px; }
+.al-bracket.br { bottom: -7px; right: -7px; border-bottom-width: 2px; border-right-width: 2px; }
+
+.al-dim { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #8B97A8; }
+.al-caret { display: inline-block; width: .5ch; color: #E612D9; animation: al-blink 1s steps(1) infinite; }
+@keyframes al-blink { 50% { opacity: 0; } }
+.al-scrollhint { animation: al-bob 1.8s ease-in-out infinite; }
+@keyframes al-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+/* ============================================================
+   HIDDEN START STATES — applied ONLY when armed + motion allowed.
+   Removed again by .is-in (back to the visible base).
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  /* NB: hidden states avoid opacity:0 on content — they use transform /
+     clip-path / filter, which either jump or stay visible if a capture
+     freezes them. So content is never lost; users still get the motion. */
+  html.al-ready [data-al="rise"]:not(.is-in) { transform: translateY(calc(30px * var(--al-amp))); }
+  html.al-ready [data-al="wipe"]:not(.is-in) { clip-path: inset(0 100% 0 0); }
+  html.al-ready [data-al="draw"]:not(.is-in) { stroke-dashoffset: var(--len, 1200); }
+
+  html.al-ready [data-al="materialize"]:not(.is-in) { filter: grayscale(calc(.55 + .45 * var(--al-charge))) brightness(.78) contrast(.92); }
+  html.al-ready [data-al="materialize"]:not(.is-in)::before { opacity: 1; }
+  html.al-ready [data-al="materialize"].is-in::after { animation: al-scan calc(.95s / var(--al-amp)) cubic-bezier(.4,0,.2,1) var(--d) forwards; }
+
+  html.al-ready [data-al="build"]:not(.is-in) .al-skeleton { opacity: 1; }
+
+  html.al-ready [data-al]:not(.is-in) .al-bracket { opacity: 0; }
+
+  @keyframes al-scan {
+    0%   { top: 0%;   opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* ---- personalities ---- */
+  html.al-ready[data-al-motion="scan"] [data-al="materialize"] { transition-duration: .6s; }
+  html.al-ready[data-al-motion="scan"] [data-al="materialize"].is-in::after { box-shadow: 0 0 22px 5px rgba(230,18,217,.6); }
+
+  html.al-ready[data-al-motion="draft"] [data-al="materialize"]:not(.is-in) { filter: grayscale(.6) brightness(.85); }
+  html.al-ready[data-al-motion="draft"] [data-al="materialize"]:not(.is-in)::before { transition-delay: calc(var(--d) + .45s); }
+
+  html.al-ready[data-al-motion="calm"] [data-al="materialize"]:not(.is-in) { filter: none; transform: translateY(calc(24px * var(--al-amp))); }
+  html.al-ready[data-al-motion="calm"] [data-al="materialize"]:not(.is-in)::before { opacity: 0; }
+  html.al-ready[data-al-motion="calm"] [data-al="materialize"]::after { display: none; }
+  html.al-ready[data-al-motion="calm"] .al-rail__bead { display: none; }
+}
+
+/* Print — never animate, never hide */
+@media print {
+  [data-al], [data-al] * { opacity: 1 !important; transform: none !important; clip-path: none !important; filter: none !important; }
+  [data-al="draw"] { stroke-dashoffset: 0 !important; }
+  .al-rail, .al-caret { display: none !important; }
+}

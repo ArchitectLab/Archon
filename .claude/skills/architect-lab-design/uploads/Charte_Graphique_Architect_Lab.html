@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architect Lab — Charte graphique v2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0B1220; --panel:#111A2C; --line:#1E2A40;
+    --m-green:#2ECC9A; --m-blue:#2A6BF2; --m-violet:#8A2BE2; --m-magenta:#E612D9;
+    --paper:#F5F7FA; --grey:#8B97A8;
+    --grad:linear-gradient(90deg,#2ECC9A,#2A6BF2,#8A2BE2,#E612D9);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--void);color:var(--paper);font-family:'Inter',sans-serif;line-height:1.65}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px 120px}
+  .blueprint-bg{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:48px 48px}
+  header{padding:90px 0 70px;border-bottom:1px solid var(--line)}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.18em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:56px;font-weight:700;letter-spacing:-.02em;margin:14px 0 10px}
+  h1 .dot{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--grey);font-size:18px;max-width:640px}
+  .gradbar{height:4px;background:var(--grad);border-radius:99px;margin-top:34px;max-width:420px}
+  h2{font-family:'Space Grotesk',sans-serif;font-size:15px;letter-spacing:.22em;text-transform:uppercase;color:var(--m-blue);margin:80px 0 8px;display:flex;align-items:center;gap:14px}
+  h2::before{content:"";display:inline-block;width:34px;height:2px;background:var(--grad)}
+  h3{font-family:'Space Grotesk',sans-serif;font-size:24px;margin:10px 0 18px}
+  p.lead{color:var(--grey);max-width:720px;margin-bottom:28px}
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:760px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px}
+  .mono{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--grey)}
+  .swatch{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .swatch .color{height:110px;display:flex;align-items:flex-end;padding:12px}
+  .swatch .meta{background:var(--panel);padding:14px 16px}
+  .swatch .meta b{font-family:'Space Grotesk',sans-serif;display:block;font-size:15px}
+  .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--grey);margin-top:6px}
+  .logo-stage{display:flex;align-items:center;justify-content:center;padding:48px;border-radius:12px;border:1px solid var(--line)}
+  .on-dark{background:var(--void)} .on-light{background:var(--paper)}
+  .specimen{font-size:42px;line-height:1.15;font-family:'Space Grotesk',sans-serif}
+  .specimen small{display:block;font-size:13px;color:var(--grey);font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+  .do{border-left:3px solid var(--m-green)} .dont{border-left:3px solid var(--m-magenta)}
+  .do b{color:var(--m-green)} .dont b{color:var(--m-magenta)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  td,th{padding:12px 14px;border:1px solid var(--line);text-align:left;vertical-align:top}
+  th{font-family:'Space Grotesk',sans-serif;background:var(--panel);color:var(--m-blue)}
+  .foot{margin-top:90px;padding-top:28px;border-top:1px solid var(--line);color:var(--grey);font-size:13px;font-family:'JetBrains Mono',monospace}
+  .baseline{font-family:'JetBrains Mono',monospace;font-size:15px;margin-top:18px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  @keyframes blink{50%{opacity:0}}
+  .cursor{animation:blink 1s steps(1) infinite;color:var(--m-magenta)}
+</style>
+</head>
+<body class="blueprint-bg">
+<div class="wrap">
+
+<header>
+  <div class="tag">// charte graphique — v2.0 — juin 2026</div>
+  <h1>Architect Lab<span class="dot">_</span></h1>
+  <p class="sub">Identité visuelle de l'association fondée par Morphaius &amp; Bunkerity. Là où l'IA et la cybersécurité forment la prochaine génération.</p>
+  <div class="gradbar"></div>
+</header>
+
+<h2>01 — Le concept</h2>
+<h3>Le plan de l'Architecte, aux couleurs du spectre</h3>
+<p class="lead">L'identité croise deux mondes : le <b>plan d'architecte</b> (quadrillage, traits de construction, cartouche technique — la rigueur du bâtisseur) et le <b>spectre Morphaius</b>, ce dégradé vert → bleu → violet → magenta hérité du logo de la société fondatrice. Le quadrillage sombre raconte le bunker et la méthode ; le dégradé raconte la transformation — l'idée qui passe par toutes les couleurs avant de devenir réelle. La filiation avec Morphaius est immédiatement lisible, l'identité du Lab reste la sienne.</p>
+<div class="baseline">&gt; Baseline : "Design. Build. Protect."<span class="cursor">▌</span></div>
+
+<h2>02 — Le logo</h2>
+<p class="lead">Le monogramme : un <b>A</b> tracé comme un plan dans un cartouche technique, dont le trait porte le dégradé Morphaius. Les traits de construction restent discrets, le nœud au sommet — l'étincelle d'intelligence — prend le magenta, point d'arrivée du spectre. Variantes : principale (fond sombre), inversée (fond clair), horizontale avec logotype.</p>
+<div class="grid g2">
+  <div class="logo-stage on-dark">
+    <svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="spectre" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#2ECC9A"/><stop offset="38%" stop-color="#2A6BF2"/>
+          <stop offset="70%" stop-color="#8A2BE2"/><stop offset="100%" stop-color="#E612D9"/>
+        </linearGradient>
+      </defs>
+      <rect x="14" y="14" width="152" height="152" fill="none" stroke="#3A4A66" stroke-width="1.6"/>
+      <path d="M14 30 V14 H30 M150 14 H166 V30 M166 150 V166 H150 M30 166 H14 V150" fill="none" stroke="url(#spectre)" stroke-width="3"/>
+      <path d="M50 138 L90 46 L130 138" fill="none" stroke="url(#spectre)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="66" y1="106" x2="114" y2="106" stroke="url(#spectre)" stroke-width="8" stroke-linecap="round"/>
+      <line x1="90" y1="46" x2="90" y2="138" stroke="#3A4A66" stroke-width="1.5" stroke-dasharray="4 5"/>
+      <line x1="50" y1="138" x2="130" y2="138" stroke="#3A4A66" stroke-width="1.5" stroke-dasharray="4 5"/>
+      <circle cx="90" cy="46" r="7" fill="#E612D9"/>
+    </svg>
+  </div>
+  <div class="logo-stage on-light">
+    <svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="spectre2" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#1FA87C"/><stop offset="38%" stop-color="#2A6BF2"/>
+          <stop offset="70%" stop-color="#8A2BE2"/><stop offset="100%" stop-color="#D012C8"/>
+        </linearGradient>
+      </defs>
+      <rect x="14" y="14" width="152" height="152" fill="none" stroke="#B9C4D6" stroke-width="1.6"/>
+      <path d="M14 30 V14 H30 M150 14 H166 V30 M166 150 V166 H150 M30 166 H14 V150" fill="none" stroke="url(#spectre2)" stroke-width="3"/>
+      <path d="M50 138 L90 46 L130 138" fill="none" stroke="url(#spectre2)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="66" y1="106" x2="114" y2="106" stroke="url(#spectre2)" stroke-width="8" stroke-linecap="round"/>
+      <line x1="90" y1="46" x2="90" y2="138" stroke="#B9C4D6" stroke-width="1.5" stroke-dasharray="4 5"/>
+      <line x1="50" y1="138" x2="130" y2="138" stroke="#B9C4D6" stroke-width="1.5" stroke-dasharray="4 5"/>
+      <circle cx="90" cy="46" r="7" fill="#D012C8"/>
+    </svg>
+  </div>
+</div>
+<div class="logo-stage on-dark" style="margin-top:18px">
+  <svg width="560" height="110" viewBox="0 0 560 110" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="spectre3" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2ECC9A"/><stop offset="38%" stop-color="#2A6BF2"/>
+        <stop offset="70%" stop-color="#8A2BE2"/><stop offset="100%" stop-color="#E612D9"/>
+      </linearGradient>
+    </defs>
+    <rect x="10" y="10" width="90" height="90" fill="none" stroke="#3A4A66" stroke-width="1.4"/>
+    <path d="M10 20 V10 H20 M90 10 H100 V20 M100 90 V100 H90 M20 100 H10 V90" fill="none" stroke="url(#spectre3)" stroke-width="2.4"/>
+    <path d="M31 83 L55 29 L79 83" fill="none" stroke="url(#spectre3)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="41" y1="64" x2="69" y2="64" stroke="url(#spectre3)" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="55" cy="29" r="4.5" fill="#E612D9"/>
+    <text x="124" y="62" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="40" fill="#F5F7FA">ARCHITECT LAB<tspan fill="#E612D9">_</tspan></text>
+    <text x="126" y="88" font-family="JetBrains Mono, monospace" font-size="13" letter-spacing="3" fill="#8B97A8">DESIGN · BUILD · PROTECT</text>
+  </svg>
+</div>
+<div class="grid g2" style="margin-top:18px">
+  <div class="card do"><b>À faire</b><p style="font-size:14px;color:var(--grey)">Zone de protection : la moitié de la hauteur du cartouche sur chaque côté. Taille minimale : 24 px (favicon : "A" seul, sans cartouche). Le dégradé suit toujours la diagonale bas-gauche → haut-droite, vert vers magenta — comme le logo Morphaius.</p></div>
+  <div class="card dont"><b>À ne pas faire</b><p style="font-size:14px;color:var(--grey)">Ne pas déformer ni incliner le monogramme. Ne pas inverser le sens du dégradé. En contexte monochrome (gravure, tampon, broderie), utiliser la version unie : blanc sur sombre, Deep Void sur clair — jamais une seule couleur du spectre isolée sur le A.</p></div>
+</div>
+
+<h2>03 — La palette</h2>
+<p class="lead">Le <b>spectre Morphaius</b> : quatre couleurs en dégradé, jamais utilisées en aplat massif — le dégradé vit sur les traits, les barres, les soulignés et le logo. Les fonds restent neutres et sombres : c'est le contraste entre la sobriété du quadrillage et la vibration du spectre qui fait l'identité.</p>
+<div style="height:56px;border-radius:12px;background:var(--grad);margin-bottom:18px;display:flex;align-items:center;justify-content:center"><span class="mono" style="color:#fff;font-weight:700">LE SPECTRE — linear-gradient(90deg, #2ECC9A → #2A6BF2 → #8A2BE2 → #E612D9)</span></div>
+<div class="grid g4">
+  <div class="swatch"><div class="color" style="background:#2ECC9A"></div><div class="meta"><b>Spectre Vert</b><span class="mono">#2ECC9A — départ, succès</span><span class="pill">R46 G204 B154</span></div></div>
+  <div class="swatch"><div class="color" style="background:#2A6BF2"></div><div class="meta"><b>Spectre Bleu</b><span class="mono">#2A6BF2 — liens, boutons</span><span class="pill">R42 G107 B242</span></div></div>
+  <div class="swatch"><div class="color" style="background:#8A2BE2"></div><div class="meta"><b>Spectre Violet</b><span class="mono">#8A2BE2 — hover, second accent</span><span class="pill">R138 G43 B226</span></div></div>
+  <div class="swatch"><div class="color" style="background:#E612D9"></div><div class="meta"><b>Spectre Magenta</b><span class="mono">#E612D9 — l'étincelle, le curseur</span><span class="pill">R230 G18 B217</span></div></div>
+</div>
+<div class="grid g4" style="margin-top:18px">
+  <div class="swatch"><div class="color" style="background:#0B1220"><span class="mono" style="color:#8B97A8">contraste AAA</span></div><div class="meta"><b>Deep Void</b><span class="mono">#0B1220 — fonds sombres</span></div></div>
+  <div class="swatch"><div class="color" style="background:#1E2A40"></div><div class="meta"><b>Grid Line</b><span class="mono">#1E2A40 — quadrillage, bordures</span></div></div>
+  <div class="swatch"><div class="color" style="background:#8B97A8"></div><div class="meta"><b>Slate</b><span class="mono">#8B97A8 — texte secondaire</span></div></div>
+  <div class="swatch"><div class="color" style="background:#F5F7FA"><span class="mono" style="color:#0B1220">texte sur sombre</span></div><div class="meta"><b>Paper</b><span class="mono">#F5F7FA — textes, fond clair</span></div></div>
+</div>
+<p class="lead" style="margin-top:18px;font-size:14px">Règle d'or : le spectre ≤ 10 % d'une composition. Pour les documents imprimés sur fond clair, assombrir les extrémités (vert #1FA87C, magenta #D012C8) pour garder le contraste.</p>
+
+<h2>04 — Les typographies</h2>
+<p class="lead">Trois familles, toutes <b>open source</b> (licence OFL) — cohérent avec l'ADN du Lab. Disponibles sur Google Fonts.</p>
+<div class="card" style="margin-bottom:18px">
+  <div class="specimen"><small>TITRES — Space Grotesk Bold</small>Construire libre, protéger fort.</div>
+</div>
+<div class="card" style="margin-bottom:18px;font-family:'Inter',sans-serif">
+  <div style="font-size:17px"><span class="mono" style="display:block;margin-bottom:8px">TEXTE COURANT — INTER REGULAR / SEMIBOLD</span>Architect Lab réunit des passionnés d'IA et de cybersécurité pour concevoir des solutions open source, encadrés par les ingénieurs de Morphaius et Bunkerity. Lisible, neutre, efficace — Inter porte tous les contenus longs.</div>
+</div>
+<div class="card" style="font-family:'JetBrains Mono',monospace">
+  <div style="font-size:15px;color:var(--m-green)"><span class="mono" style="display:block;margin-bottom:8px;color:var(--grey)">CODE &amp; ACCENTS — JETBRAINS MONO</span>$ git clone https://github.com/architect-lab/domaius</div>
+</div>
+<table style="margin-top:18px">
+  <tr><th>Usage</th><th>Police</th><th>Graisse / taille</th></tr>
+  <tr><td>Titres H1–H2</td><td>Space Grotesk</td><td>Bold — 28 à 56 px, interlettrage −2 %</td></tr>
+  <tr><td>Texte courant</td><td>Inter</td><td>Regular 16 px / SemiBold pour l'emphase</td></tr>
+  <tr><td>Code, tags, baseline, données</td><td>JetBrains Mono</td><td>Regular — toujours en majuscules pour les tags</td></tr>
+  <tr><td>Documents Word (fallback)</td><td>Arial / Consolas</td><td>Quand les polices web ne sont pas installées</td></tr>
+</table>
+
+<h2>05 — Iconographie &amp; motifs</h2>
+<div class="grid g3">
+  <div class="card"><b style="font-family:'Space Grotesk',sans-serif">Le quadrillage</b><p style="font-size:14px;color:var(--grey)">Trame de 48 px, traits #1E2A40 sur fond Dee

@@ -1,0 +1,124 @@
+/* ============================================================
+   ARCHITECT LAB — Design System
+   "Design. Build. Protect."
+   The architect's blueprint meets the Morphaius spectrum.
+   ------------------------------------------------------------
+   Entry stylesheet — imports all token layers, then sets base
+   element styles + a small set of identity utilities.
+   ============================================================ */
+@import url('./tokens/fonts.css');
+@import url('./tokens/colors.css');
+@import url('./tokens/typography.css');
+@import url('./tokens/layout.css');
+@import url('./interactions.css');
+
+/* ---------- Reset-ish base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--al-void);
+  color: var(--al-text);
+  font-family: var(--al-font-body);
+  font-size: var(--al-text-base);
+  line-height: var(--al-leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- Headings ---------- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--al-font-display);
+  font-weight: var(--al-weight-bold);
+  line-height: var(--al-leading-tight);
+  letter-spacing: var(--al-tracking-display);
+  margin: 0;
+}
+h1 { font-size: var(--al-text-4xl); }
+h2 { font-size: var(--al-text-2xl); }
+h3 { font-size: var(--al-text-xl); }
+
+/* ---------- Links ---------- */
+a {
+  color: var(--al-link);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover { color: var(--al-link-hover); }
+
+/* ---------- Code & mono ---------- */
+code, kbd, samp, pre {
+  font-family: var(--al-font-mono);
+  font-size: 0.9em;
+}
+
+/* ============================================================
+   IDENTITY UTILITIES
+   ============================================================ */
+
+/* Spectrum text — gradient clipped to glyphs (titles, accents) */
+.al-spectrum-text {
+  background: var(--al-spectrum);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* The mono tag — uppercase, tracked, often spectrum-filled */
+.al-tag {
+  font-family: var(--al-font-mono);
+  font-size: var(--al-text-xs);
+  letter-spacing: var(--al-tracking-tag);
+  text-transform: uppercase;
+}
+.al-tag--spectrum {
+  background: var(--al-spectrum);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* The gradient rule — a 4px spectrum bar (under titles, section breaks) */
+.al-rule {
+  height: 4px;
+  border: 0;
+  border-radius: var(--al-radius-pill);
+  background: var(--al-spectrum);
+}
+
+/* Section eyebrow — small tracked label preceded by a spectrum tick */
+.al-eyebrow {
+  font-family: var(--al-font-display);
+  font-size: var(--al-text-sm);
+  font-weight: var(--al-weight-medium);
+  letter-spacing: var(--al-tracking-tag);
+  text-transform: uppercase;
+  color: var(--al-blue);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--al-space-3);
+}
+.al-eyebrow::before {
+  content: "";
+  width: 34px;
+  height: 2px;
+  background: var(--al-spectrum);
+}
+
+/* The blinking cursor — the spark / sign-off mark */
+.al-cursor {
+  color: var(--al-magenta);
+  animation: al-blink 1s steps(1) infinite;
+}
+@keyframes al-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .al-cursor { animation: none; }
+}
+
+/* Surface card */
+.al-card {
+  background: var(--al-panel);
+  border: var(--al-border-card);
+  border-radius: var(--al-radius-md);
+  padding: var(--al-space-5);
+}

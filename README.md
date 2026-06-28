@@ -24,14 +24,19 @@ deja (voir plus bas). C'est le meilleur moment pour contribuer.
 
 ## Apercu
 - **Accueil** : une page on-brand (fond void, grille blueprint, le spectre, le curseur magenta).
-- **Console d'orchestration** : tu parles a l'IA (texte ; voix a venir), elle comprend, branche
-  les bons plugins, agit avec ton accord, et compose l'affichage en direct. A droite, le
-  registre des plugins (online/offline) et le journal d'audit.
+- **App (chat + IHM)** : a gauche un chat, a droite l'**IHM**, un canvas vivant que l'IA pilote.
+  Tu lui demandes, elle y pose des elements **persistants** et **rafraichis a la volee** (ex :
+  "mets sur l'IHM la meteo d'Agen rafraichie toutes les 2 minutes"), ou compose un visuel libre
+  (HTML/CSS) rendu en bac a sable.
+- **Console d'orchestration** : l'outil technique. Tu parles a l'IA, elle comprend, branche
+  les bons plugins, agit avec ton accord. A droite, le registre des plugins (online/offline)
+  et le journal d'audit.
 
 ## Lancer en local (Phase 1)
-Un squelette tourne deja (Blazor + .NET 10) : accueil, console, un cerveau IA agnostique
-(local ou cloud), deux plugins reels (meteo et domotique simulee), une approbation humaine
-configurable, et une surface generative. Pas besoin d'etre dev :
+Un squelette tourne deja (Blazor + .NET 10) : accueil, app (chat + IHM), console, un cerveau
+IA agnostique (local ou cloud), trois plugins reels (meteo, domotique simulee, pilotage de
+l'IHM), une approbation humaine configurable, et une surface generative. La surface React est
+deja construite et commitee, donc **pas besoin de Node** pour lancer. Pas besoin d'etre dev :
 - Demarrage : `docs/dev-quickstart.md` (installer .NET 10, ouvrir dans VS Code, `dotnet run`).
 - Suivre les nouveautes sans re-telecharger un ZIP : `docs/git-quickstart.md` (git clone).
 

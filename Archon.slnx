@@ -3,6 +3,7 @@
   <Project Path="src/Archon.Data/Archon.Data.csproj" />
   <Project Path="src/Archon.Plugins.Meteo/Archon.Plugins.Meteo.csproj" />
   <Project Path="src/Archon.Plugins.Maison/Archon.Plugins.Maison.csproj" />
+  <Project Path="src/Archon.Plugins.Ihm/Archon.Plugins.Ihm.csproj" />
   <Project Path="src/Archon.Web/Archon.Web.csproj" />
   <Project Path="tests/Archon.Tests/Archon.Tests.csproj" />
 </Solution>

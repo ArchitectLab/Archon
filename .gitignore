@@ -45,6 +45,9 @@ yarn-error.log*
 pnpm-debug.log*
 dist/
 build/
+# La surface React (src/Archon.Surface) : on ignore ses dependances, mais on VERSIONNE son
+# build (src/Archon.Web/wwwroot/app) pour lancer Archon sans Node. Voir docs/dev-quickstart.md.
+src/Archon.Surface/node_modules/
 
 # Python
 __pycache__/

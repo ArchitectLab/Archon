@@ -1,3 +1,4 @@
+@using System.Globalization
 @using Archon.Core.Ui
 
 @if (View is not null)
@@ -38,6 +39,24 @@
                 }
             </ul>
         }
+        else if (node.Type == "sparkline")
+        {
+            <figure class="al-spark">
+                <svg viewBox="0 0 240 48" preserveAspectRatio="none" class="al-spark__svg" role="img" aria-label="@node.Text">
+                    <defs>
+                        <linearGradient id="al-spark-grad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#2ECC9A" />
+                            <stop offset="100%" stop-color="#2A6BF2" />
+                        </linearGradient>
+                    </defs>
+                    <polyline points="@SparkPoints(node.Points, 240, 48)" fill="none" stroke="url(#al-spark-grad)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+                </svg>
+                @if (!string.IsNullOrEmpty(node.Text))
+                {
+                    <figcaption class="al-meta">@node.Text</figcaption>
+                }
+            </figure>
+        }
         else if (node.Type == "rule")
         {
             <div class="al-rule"></div>
@@ -64,4 +83,30 @@
         "accent" => "al-tone-accent",
         _ => "",
     };
+
+    // Construit l'attribut "points" d'une polyline SVG a partir des valeurs (normalisees).
+    private static string SparkPoints(IReadOnlyList<double> values, double w, double h)
+    {
+        if (values is null || values.Count == 0) return "";
+        if (values.Count == 1) return $"0,{(h / 2).ToString("0.#", CultureInfo.InvariantCulture)} {w.ToString("0.#", CultureInfo.InvariantCulture)},{(h / 2).ToString("0.#", CultureInfo.InvariantCulture)}";
+
+        var min = values.Min();
+        var max = values.Max();
+        var range = max - min;
+        if (range < 1e-9) range = 1;
+
+        const double pad = 4;
+        var sb = new System.Text.StringBuilder();
+        for (var i = 0; i < values.Count; i++)
+        {
+            var x = w * i / (values.Count - 1);
+            var y = h - pad - (h - 2 * pad) * (values[i] - min) / range;
+            if (i > 0) sb.Append(' ');
+            sb.Append(x.ToString("0.#", CultureInfo.InvariantCulture));
+            sb.Append(',');
+            sb.Append(y.ToString("0.#", CultureInfo.InvariantCulture));
+        }
+
+        return sb.ToString();
+    }
 }

@@ -93,10 +93,10 @@ public sealed class MeteoPlugin : IPlugin
         var name = first.GetProperty("name").GetString() ?? city;
         var country = first.TryGetProperty("country", out var co) ? co.GetString() ?? "" : "";
 
-        // 2. Meteo actuelle.
+        // 2. Meteo actuelle + courbe horaire du jour (pour la sparkline).
         var inv = CultureInfo.InvariantCulture;
         var url =
-            $"https://api.open-meteo.com/v1/forecast?latitude={lat.ToString(inv)}&longitude={lon.ToString(inv)}&current=temperature_2m,weather_code,wind_speed_10m";
+            $"https://api.open-meteo.com/v1/forecast?latitude={lat.ToString(inv)}&longitude={lon.ToString(inv)}&current=temperature_2m,weather_code,wind_speed_10m&hourly=temperature_2m&forecast_days=1";
         using var resp = await _http.GetAsync(url, ct);
         if (!resp.IsSuccessStatusCode)
         {
@@ -109,13 +109,33 @@ public sealed class MeteoPlugin : IPlugin
         var wind = current.GetProperty("wind_speed_10m").GetDouble();
         var code = current.GetProperty("weather_code").GetInt32();
 
-        // Schema UI neutre : titre + grand chiffre + note.
-        var ui = UiView.Of(
-            new UiNode { Type = "heading", Text = $"{name} {country}".Trim() },
-            new UiNode { Type = "stat", Value = temp.ToString("0.#", inv), Unit = "°C", Text = WeatherText(code) },
-            new UiNode { Type = "note", Text = $"Vent {wind.ToString("0.#", inv)} km/h" });
+        // Courbe horaire (jusqu'a 24 points) : une donnee vivante pour la sparkline.
+        var points = new List<double>();
+        if (doc.RootElement.TryGetProperty("hourly", out var hourly) &&
+            hourly.TryGetProperty("temperature_2m", out var temps) &&
+            temps.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var t in temps.EnumerateArray())
+            {
+                points.Add(t.GetDouble());
+                if (points.Count >= 24) break;
+            }
+        }
 
-        return CapabilityResult.Ok(ui);
+        // Schema UI neutre : titre + grand chiffre + courbe + note.
+        var nodes = new List<UiNode>
+        {
+            new() { Type = "heading", Text = $"{name} {country}".Trim() },
+            new() { Type = "stat", Value = temp.ToString("0.#", inv), Unit = "°C", Text = WeatherText(code) },
+        };
+        if (points.Count > 1)
+        {
+            nodes.Add(new UiNode { Type = "sparkline", Text = "Temperature sur 24 h", Points = points });
+        }
+
+        nodes.Add(new UiNode { Type = "note", Text = $"Vent {wind.ToString("0.#", inv)} km/h" });
+
+        return CapabilityResult.Ok(new UiView(nodes));
     }
 
     // Codes WMO -> texte FR (simplifie).

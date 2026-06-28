@@ -1,5 +1,6 @@
 using Archon.Core.Ai;
 using Archon.Core.Audit;
+using Archon.Core.Data;
 using Archon.Core.Plugins;
 using Archon.Core.Registry;
 using Archon.Core.Security;
@@ -12,6 +13,13 @@ public sealed record OrchestratorResponse(bool Success, string Message, UiView? 
 public interface IOrchestrator
 {
     Task<OrchestratorResponse> HandleAsync(string input, CancellationToken ct = default);
+
+    // Invoque directement une capacite (permission + approbation + audit). Sert au
+    // rafraichissement d'un widget de l'IHM, qui re-execute sa capacite source.
+    Task<OrchestratorResponse> InvokeCapabilityAsync(
+        string capabilityId,
+        IReadOnlyDictionary<string, string> args,
+        CancellationToken ct = default);
 }
 
 // L'orchestrateur : comprend l'intention (resolver IA ou repli mots-cles), verifie la
@@ -26,6 +34,7 @@ public sealed class Orchestrator : IOrchestrator
     private readonly IPermissionPolicy _policy;
     private readonly IApprovalGate _approval;
     private readonly IAuditLog _audit;
+    private readonly ISettingsStore? _settings;
 
     public Orchestrator(
         PluginRegistry registry,
@@ -33,7 +42,8 @@ public sealed class Orchestrator : IOrchestrator
         ILanguageModel model,
         IPermissionPolicy policy,
         IApprovalGate approval,
-        IAuditLog audit)
+        IAuditLog audit,
+        ISettingsStore? settings = null)
     {
         _registry = registry;
         _resolver = resolver;
@@ -41,6 +51,7 @@ public sealed class Orchestrator : IOrchestrator
         _policy = policy;
         _approval = approval;
         _audit = audit;
+        _settings = settings;
     }
 
     public async Task<OrchestratorResponse> HandleAsync(string input, CancellationToken ct = default)
@@ -57,31 +68,40 @@ public sealed class Orchestrator : IOrchestrator
             return await AnswerFreeformAsync(input, ct);
         }
 
-        var plugin = _registry.FindByCapability(intent.CapabilityId);
+        // 2-4 : permission, approbation, invocation, audit (factorise pour le rafraichissement).
+        return await InvokeCapabilityAsync(intent.CapabilityId, intent.Args, ct);
+    }
+
+    public async Task<OrchestratorResponse> InvokeCapabilityAsync(
+        string capabilityId,
+        IReadOnlyDictionary<string, string> args,
+        CancellationToken ct = default)
+    {
+        var plugin = _registry.FindByCapability(capabilityId);
         if (plugin is null)
         {
-            return new OrchestratorResponse(false, $"Aucun plugin ne fournit la capacite '{intent.CapabilityId}'.", null);
+            return new OrchestratorResponse(false, $"Aucun plugin ne fournit la capacite '{capabilityId}'.", null);
         }
 
-        var capability = plugin.Capabilities.First(c => c.Id == intent.CapabilityId);
-        var target = $"{plugin.Manifest.Id}/{intent.CapabilityId}";
+        var capability = plugin.Capabilities.First(c => c.Id == capabilityId);
+        var target = $"{plugin.Manifest.Id}/{capabilityId}";
 
-        // 2. Permission (deny par defaut).
-        if (!_policy.IsAllowed(plugin.Manifest.Id, intent.CapabilityId))
+        // Permission (deny par defaut).
+        if (!_policy.IsAllowed(plugin.Manifest.Id, capabilityId))
         {
             _audit.Append(new AuditEntry(DateTimeOffset.UtcNow, "orchestrator", "invoke.denied", target, false));
-            return new OrchestratorResponse(false, $"Permission refusee pour '{intent.CapabilityId}'.", null);
+            return new OrchestratorResponse(false, $"Permission refusee pour '{capabilityId}'.", null);
         }
 
-        // 3. Approbation humaine (selon le mode choisi par l'utilisateur).
-        if (!await _approval.RequestApprovalAsync(plugin.Manifest.Id, capability, intent.Args, ct))
+        // Approbation humaine (selon le mode choisi par l'utilisateur). Les lectures passent direct.
+        if (!await _approval.RequestApprovalAsync(plugin.Manifest.Id, capability, args, ct))
         {
             _audit.Append(new AuditEntry(DateTimeOffset.UtcNow, "orchestrator", "invoke.unapproved", target, false));
             return new OrchestratorResponse(false, "Action refusee ou non approuvee a temps.", null);
         }
 
-        // 4. Invocation.
-        var result = await plugin.InvokeAsync(intent.CapabilityId, intent.Args, ct);
+        // Invocation.
+        var result = await plugin.InvokeAsync(capabilityId, args, ct);
         _audit.Append(new AuditEntry(DateTimeOffset.UtcNow, "orchestrator", "invoke", target, result.Success));
 
         return result.Success
@@ -97,9 +117,16 @@ public sealed class Orchestrator : IOrchestrator
         {
             try
             {
+                var system = "Tu es l'assistant d'Archon. Reponds brievement et utilement en francais, sans inventer.";
+                var prefs = _settings?.Get("ihm.preferences");
+                if (!string.IsNullOrWhiteSpace(prefs))
+                {
+                    system += $" Preferences d'affichage de l'utilisateur (IHM) a respecter : {prefs}";
+                }
+
                 var answer = await _model.CompleteAsync(
                 [
-                    new ModelMessage("system", "Tu es l'assistant d'Archon. Reponds brievement et utilement en francais, sans inventer."),
+                    new ModelMessage("system", system),
                     new ModelMessage("user", input),
                 ], ct);
                 _audit.Append(new AuditEntry(DateTimeOffset.UtcNow, "orchestrator", "answer", "modele", true));

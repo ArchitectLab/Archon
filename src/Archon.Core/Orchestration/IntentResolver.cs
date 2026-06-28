@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Archon.Core.Ai;
+using Archon.Core.Data;
 
 namespace Archon.Core.Orchestration;
 
@@ -61,11 +62,13 @@ public sealed class LlmIntentResolver : IIntentResolver
 {
     private readonly ILanguageModel _model;
     private readonly IIntentResolver _fallback;
+    private readonly ISettingsStore? _settings;
 
-    public LlmIntentResolver(ILanguageModel model, IIntentResolver fallback)
+    public LlmIntentResolver(ILanguageModel model, IIntentResolver fallback, ISettingsStore? settings = null)
     {
         _model = model;
         _fallback = fallback;
+        _settings = settings;
     }
 
     public async Task<Intent?> ResolveAsync(string input, IReadOnlyList<CapabilitySpec> available, CancellationToken ct = default)
@@ -79,7 +82,7 @@ public sealed class LlmIntentResolver : IIntentResolver
         {
             var messages = new List<ModelMessage>
             {
-                new("system", BuildSystemPrompt(available)),
+                new("system", BuildSystemPrompt(available, _settings?.Get("ihm.preferences"))),
                 new("user", input),
             };
             var raw = await _model.CompleteAsync(messages, ct);
@@ -92,13 +95,20 @@ public sealed class LlmIntentResolver : IIntentResolver
         }
     }
 
-    private static string BuildSystemPrompt(IReadOnlyList<CapabilitySpec> available)
+    private static string BuildSystemPrompt(IReadOnlyList<CapabilitySpec> available, string? preferences)
     {
         var sb = new StringBuilder();
         sb.AppendLine("Tu es l'orchestrateur d'Archon. A partir de la demande de l'utilisateur,");
         sb.AppendLine("choisis UNE capacite parmi la liste et extrais ses parametres.");
         sb.AppendLine("Reponds UNIQUEMENT en JSON : {\"capability\": \"id\", \"args\": {\"nom\": \"valeur\"}}.");
         sb.AppendLine("Si aucune capacite ne convient, reponds {\"capability\": null}.");
+        sb.AppendLine("Pour afficher durablement sur l'IHM (le canvas), utilise ihm.place (widget lie a une");
+        sb.AppendLine("capacite, ex. meteo) ou ihm.html (compose un fragment HTML/CSS original et soigne).");
+        if (!string.IsNullOrWhiteSpace(preferences))
+        {
+            sb.AppendLine($"Preferences d'affichage de l'utilisateur (a respecter sur l'IHM) : {preferences}");
+        }
+
         sb.AppendLine("Capacites disponibles :");
         foreach (var c in available)
         {

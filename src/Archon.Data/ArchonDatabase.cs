@@ -40,6 +40,16 @@ public sealed class ArchonDatabase
                 detail  TEXT NOT NULL,
                 allowed INTEGER NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS widgets (
+                id            TEXT PRIMARY KEY,
+                title         TEXT NOT NULL,
+                kind          TEXT NOT NULL,
+                refresh_sec   INTEGER NOT NULL,
+                capability_id TEXT NOT NULL,
+                args_json     TEXT NOT NULL,
+                html          TEXT NOT NULL,
+                created_at    TEXT NOT NULL
+            );
             """;
         cmd.ExecuteNonQuery();
     }

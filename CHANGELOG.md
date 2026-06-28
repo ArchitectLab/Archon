@@ -17,4 +17,10 @@ versionnage semantique (https://semver.org).
 - Surface generative v1 : schema UI neutre rendu par un renderer Blazor ; reponse libre de l'IA.
 - Persistance locale SQLite (journal d'audit et mode d'approbation durables).
 - Tests unitaires (xUnit) sur le coeur.
+- Chat + IHM (surface React sous `/app`) : a gauche un chat, a droite l'IHM, un canvas vivant
+  que l'IA pilote. L'IA y pose des widgets persistants et auto-rafraichis (plugin Ihm :
+  `ihm.place`, `ihm.html`, `ihm.clear`, `ihm.set_preferences`), via une API HTTP/JSON du coeur.
+  Widgets "capacite" (ex. meteo rafraichie toutes les 2 min, avec sparkline) et widgets "html"
+  libres rendus en bac a sable. Preferences d'affichage persistees et injectees dans le prompt.
+  Le build React est commite (lancement sans Node).
 

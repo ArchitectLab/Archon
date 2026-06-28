@@ -195,6 +195,9 @@ a:hover { color: var(--al-violet); }
 .al-kv li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--al-line); font-size: 14px; }
 .al-kv__k { color: var(--al-slate); }
 .al-ui-list { margin: 8px 0; padding-left: 18px; }
+.al-spark { margin: 12px 0 6px; }
+.al-spark__svg { display: block; width: 100%; height: 48px; }
+.al-spark figcaption { margin-top: 4px; }
 .al-tone-success { color: var(--al-green); }
 .al-tone-info { color: var(--al-blue); }
 .al-tone-warn { color: var(--al-magenta); }

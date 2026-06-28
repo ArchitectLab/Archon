@@ -11,6 +11,7 @@
     <ProjectReference Include="..\Archon.Data\Archon.Data.csproj" />
     <ProjectReference Include="..\Archon.Plugins.Meteo\Archon.Plugins.Meteo.csproj" />
     <ProjectReference Include="..\Archon.Plugins.Maison\Archon.Plugins.Maison.csproj" />
+    <ProjectReference Include="..\Archon.Plugins.Ihm\Archon.Plugins.Ihm.csproj" />
   </ItemGroup>
 
 </Project>

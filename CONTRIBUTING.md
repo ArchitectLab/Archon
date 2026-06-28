@@ -7,11 +7,37 @@ Merci de vouloir construire Archon. Un seul prerequis d'etat d'esprit : l'envie.
 - Pour un nouveau plugin : utilise le modele d'issue **"Proposition de plugin"**.
 
 ## Le flux
-1. Forke le depot et cree une branche claire (ex. `feat/plugin-meteo`).
+1. Forke le depot et cree une branche claire (voir **Nommage des branches** ci-dessous).
 2. Fais des commits clairs (Conventional Commits recommande : `feat:`, `fix:`, `docs:`...).
 3. Ouvre une **Pull Request** en remplissant le modele.
 4. Une relecture par un mainteneur, et un coup d'oeil securite cote Bunkerity sur les
    parties sensibles, precedent la fusion.
+
+## Nommage des branches
+Une convention simple et lisible, alignee sur les Conventional Commits. Format :
+
+    <type>/<resume-court>
+
+- **type** : la nature du travail (liste ci-dessous).
+- **resume** : 2 a 5 mots en minuscules, separes par des tirets (kebab-case),
+  sans accents ni espaces.
+- **numero d'issue** (optionnel) : en prefixe du resume, ex. `feat/142-plugin-meteo`.
+
+| Prefixe     | Pour quoi                                            |
+| ----------- | ---------------------------------------------------- |
+| `feat/`     | nouvelle fonctionnalite                              |
+| `fix/`      | correction de bug                                    |
+| `plugin/`   | nouveau plugin (ou evolution majeure d'un plugin)    |
+| `docs/`     | documentation seule                                  |
+| `refactor/` | reorganisation du code sans changer le comportement  |
+| `test/`     | ajout ou correction de tests                         |
+| `chore/`    | outillage, config, dependances, CI                   |
+
+Exemples : `feat/plugin-meteo`, `fix/reconnexion-mqtt`, `plugin/camera-rtsp`,
+`docs/vision-personas`, `chore/ci-lint`.
+
+> Regle d'or : en lisant le nom d'une branche, on doit comprendre *ce qui* change
+> et *de quelle nature*, sans ouvrir le code.
 
 ## CLA (obligatoire)
 Archon utilise un modele de **double licence** (open source + commerciale). Pour que les

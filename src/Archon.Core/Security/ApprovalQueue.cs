@@ -1,4 +1,5 @@
 using Archon.Core.Audit;
+using Archon.Core.Data;
 using Archon.Core.Plugins;
 
 namespace Archon.Core.Security;
@@ -11,12 +12,26 @@ public enum ApprovalMode { Ask, AutoRun }
 public sealed class ApprovalSettings
 {
     private readonly Lock _lock = new();
+    private readonly ISettingsStore? _store;
     private ApprovalMode _mode = ApprovalMode.Ask;
+
+    public ApprovalSettings(ISettingsStore? store = null)
+    {
+        _store = store;
+        if (store?.Get("approval.mode") is { } saved && Enum.TryParse<ApprovalMode>(saved, out var mode))
+        {
+            _mode = mode;
+        }
+    }
 
     public ApprovalMode Mode
     {
         get { lock (_lock) return _mode; }
-        set { lock (_lock) _mode = value; }
+        set
+        {
+            lock (_lock) _mode = value;
+            _store?.Set("approval.mode", value.ToString());
+        }
     }
 }
 

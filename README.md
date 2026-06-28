@@ -22,10 +22,18 @@ deja (voir plus bas). C'est le meilleur moment pour contribuer.
 - **Securite jour 1** : `docs/security-baseline.md`.
 - **Design system** : `docs/design-system.md` (skill Claude Code `architect-lab-design`).
 
+## Apercu
+- **Accueil** : une page on-brand (fond void, grille blueprint, le spectre, le curseur magenta).
+- **Console d'orchestration** : tu parles a l'IA (texte ; voix a venir), elle comprend, branche
+  les bons plugins, agit avec ton accord, et compose l'affichage en direct. A droite, le
+  registre des plugins (online/offline) et le journal d'audit.
+
 ## Lancer en local (Phase 1)
-Un premier squelette tourne deja (Blazor + .NET 10) : accueil, console d'orchestration, et
-un plugin meteo reel branche de bout en bout. Pas besoin d'etre dev : suis
-`docs/dev-quickstart.md` (installer .NET 10, ouvrir le dossier dans VS Code, `dotnet run`).
+Un squelette tourne deja (Blazor + .NET 10) : accueil, console, un cerveau IA agnostique
+(local ou cloud), deux plugins reels (meteo et domotique simulee), une approbation humaine
+configurable, et une surface generative. Pas besoin d'etre dev :
+- Demarrage : `docs/dev-quickstart.md` (installer .NET 10, ouvrir dans VS Code, `dotnet run`).
+- Suivre les nouveautes sans re-telecharger un ZIP : `docs/git-quickstart.md` (git clone).
 
 ## Licence
 Archon est distribue sous **AGPL-3.0-or-later** (voir `LICENSE`).

@@ -1,13 +1,13 @@
-# —— Archon — ignore rules ——
-# La stack n'est pas encore figée : ce fichier couvre les cas courants
-# (OS, éditeurs, .NET, Node, Python). On l'affinera quand la stack sera choisie.
+# Archon : regles d'ignore
+# La stack se precise (voir docs/ARCHITECTURE.md). Ce fichier couvre les cas courants
+# (OS, editeurs, .NET, Node, Python) et la base locale.
 
-# —— OS ——
+# OS
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# —— Éditeurs / IDE ——
+# Editeurs / IDE
 .vs/
 .vscode/*
 !.vscode/extensions.json
@@ -17,24 +17,28 @@ desktop.ini
 *.swo
 *~
 
-# —— Claude Code ——
-# On versionne les skills (.claude/skills/), mais pas les réglages locaux.
+# Claude Code (on versionne les skills, pas les reglages locaux)
 .claude/settings.local.json
 .claude/*.local.json
 
-# —— Secrets / environnement ——
+# Secrets / environnement
 .env
 .env.*
 !.env.example
 *.pem
 *.key
 
-# —— .NET ——
+# Archon : base de donnees locale (SQLite)
+archon.db
+*.db-shm
+*.db-wal
+
+# .NET
 bin/
 obj/
 *.user
 
-# —— Node ——
+# Node
 node_modules/
 npm-debug.log*
 yarn-error.log*
@@ -42,7 +46,7 @@ pnpm-debug.log*
 dist/
 build/
 
-# —— Python ——
+# Python
 __pycache__/
 *.py[cod]
 .venv/
@@ -50,6 +54,6 @@ venv/
 .mypy_cache/
 .pytest_cache/
 
-# —— Logs / divers ——
+# Logs / divers
 *.log
 coverage/

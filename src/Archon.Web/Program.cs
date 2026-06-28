@@ -1,9 +1,11 @@
 using Archon.Core.Ai;
 using Archon.Core.Audit;
+using Archon.Core.Data;
 using Archon.Core.Orchestration;
 using Archon.Core.Plugins;
 using Archon.Core.Registry;
 using Archon.Core.Security;
+using Archon.Data;
 using Archon.Plugins.Maison;
 using Archon.Plugins.Meteo;
 using Archon.Web.Components;
@@ -20,10 +22,14 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<PluginRegistry>();
 builder.Services.AddSingleton<GrantStore>();
 builder.Services.AddSingleton<IPermissionPolicy>(sp => sp.GetRequiredService<GrantStore>());
-builder.Services.AddSingleton<IAuditLog, InMemoryAuditLog>();
+// --- Persistance locale (SQLite) : journal d'audit et reglages survivent au redemarrage ---
+var dbPath = Path.Combine(builder.Environment.ContentRootPath, "archon.db");
+builder.Services.AddSingleton(new ArchonDatabase(dbPath));
+builder.Services.AddSingleton<ISettingsStore, SqliteSettingsStore>();
+builder.Services.AddSingleton<IAuditLog, SqliteAuditLog>();
 
 // --- Approbation humaine, configurable (option). Defaut : demander pour les actions. ---
-builder.Services.AddSingleton<ApprovalSettings>();
+builder.Services.AddSingleton<ApprovalSettings>(sp => new ApprovalSettings(sp.GetRequiredService<ISettingsStore>()));
 builder.Services.AddSingleton<ApprovalQueue>();
 builder.Services.AddSingleton<IApprovalGate>(sp => new InteractiveApprovalGate(
     sp.GetRequiredService<ApprovalQueue>(),
